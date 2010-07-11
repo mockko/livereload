@@ -2,14 +2,40 @@
 var activeTabId = null;
 var ws = null;
 var disconnectionReason = 'unexpected';
+var version = "1.1";
+var versionInfoReceived = false;
 
 function establishConnection() {
     if (ws != null) return;
     ws = new WebSocket("ws://localhost:10083/websocket");
     disconnectionReason = 'cannot-connect';
+    versionInfoReceived = false;
     ws.onmessage = function(evt) {
         if (activeTabId == null) return;
-        chrome.tabs.sendRequest(activeTabId, evt.data);
+        var m, data = evt.data;
+        if (m = data.match(/!!ver:([\d.]+)/)) {
+            versionInfoReceived = true;
+            if (m[1] != version) {
+                alert("You are using an incompatible version of the command-line tool.\n\n" +
+                    "Extension version: " + version + "\n" +
+                    "Command-line tool version: " + m[1] + "\n\n" +
+                    "Please run the following command to update your command-line tool:\n" +
+                    "    gem update livereload");
+                disconnectionReason = 'version-mismatch';
+                ws.close();
+                deactivated();
+                return;
+            }
+        } else if (!versionInfoReceived) {
+            alert("You are using an old incompatible version of the command-line tool.\n\n" +
+                "Please run the following command to update your command-line tool:\n" +
+                "    gem update livereload");
+            disconnectionReason = 'version-mismatch';
+            ws.close();
+            deactivated();
+            return;
+        }
+        chrome.tabs.sendRequest(activeTabId, data);
     };
     ws.onclose = function() {
         if (disconnectionReason == 'cannot-connect') {
@@ -17,8 +43,7 @@ function establishConnection() {
         } else if (disconnectionReason == 'broken') {
             alert("LiveReload server connection closed. Please restart the server and re-enable LiveReload.");
         }
-        activeTabId = null;
-        ws = null;
+        deactivated();
     };
     ws.onopen = function() {
         disconnectionReason = 'broken';
@@ -40,15 +65,25 @@ function closeConnection() {
         ws.close();
         ws = null;
     }
+    deactivated();
+}
+
+function activated() {
+    chrome.browserAction.setTitle({ title: "Disable LiveReload" });
+    chrome.browserAction.setIcon({ path: 'icon19-on.png' });
+}
+
+function deactivated() {
+    ws = null;
+    activeTabId = null;
+    chrome.browserAction.setTitle({ title: "Enable LiveReload" });
+    chrome.browserAction.setIcon({ path: 'icon19.png' });
 }
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     var tabId = tab.id;
     if (activeTabId == tabId) {
         closeConnection();
-        activeTabId = null;
-        chrome.browserAction.setTitle({ title: "Enable LiveReload" });
-        chrome.browserAction.setIcon({ path: 'icon19.png' });
     } else {
         var wasActive = (activeTabId != null);
         try {
@@ -61,7 +96,6 @@ chrome.browserAction.onClicked.addListener(function(tab) {
         activeTabId = tabId;
         if (wasActive)
             sendTabUrl();
-        chrome.browserAction.setTitle({ title: "Disable LiveReload" });
-        chrome.browserAction.setIcon({ path: 'icon19-on.png' });
+        activated();
     }
 }, false);
