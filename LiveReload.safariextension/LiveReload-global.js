@@ -38,8 +38,6 @@ function closeConnection() {
     }
 }
 
-function debug(str){ alert(str); };
-
 safari.application.addEventListener("command", function(event) {
     if (event.command == 'enable') {
         var tab = safari.application.activeBrowserWindow.activeTab;
