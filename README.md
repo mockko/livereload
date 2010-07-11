@@ -10,6 +10,8 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 What's new?
 -----------
 
+1.2: added Chrome extension, added icon artwork, added a check that the command-line tool version is compatible with the extension version, fixed a bug with multiple stylesheet updates happening too fast.
+
 1.1: enabled autoupdating for the Safari extension.
 
 1.0: original release -- Safari extension and a command-line tool in a Ruby gem.
@@ -26,7 +28,7 @@ Installing in Safari
 
 3. If you haven't already, [you need to enable Safari extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
 
-4. Download [LiveReload 1.1 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.1.safariextz). Double-click it and confirm installation:
+4. Download [LiveReload 1.2 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.2.safariextz). Double-click it and confirm installation:
 
 ![](http://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
 

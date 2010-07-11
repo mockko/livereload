@@ -2,7 +2,7 @@ require 'em-websocket'
 require 'directory_watcher'
 
 module LiveReload
-  VERSION = "1.1"
+  VERSION = "1.2"
 
   def self.start_watching ws
     $dw.add_observer { |*args|
