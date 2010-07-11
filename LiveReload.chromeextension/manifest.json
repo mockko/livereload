@@ -1,0 +1,19 @@
+{
+  "name": "LiveReload",
+  "version": "1.1",
+  "background_page": "background.html",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*"],
+      "js": ["LiveReload-content.js"]
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "http://*/*"
+  ],
+  "browser_action": {
+    "default_title": "Enable LiveReload",
+    "default_icon": "icon.png"
+  }
+}
