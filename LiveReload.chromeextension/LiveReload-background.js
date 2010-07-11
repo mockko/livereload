@@ -48,6 +48,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
         closeConnection();
         activeTabId = null;
         chrome.browserAction.setTitle({ title: "Enable LiveReload" });
+        chrome.browserAction.setIcon({ path: 'icon19.png' });
     } else {
         var wasActive = (activeTabId != null);
         try {
@@ -61,5 +62,6 @@ chrome.browserAction.onClicked.addListener(function(tab) {
         if (wasActive)
             sendTabUrl();
         chrome.browserAction.setTitle({ title: "Disable LiveReload" });
+        chrome.browserAction.setIcon({ path: 'icon19-on.png' });
     }
 }, false);
