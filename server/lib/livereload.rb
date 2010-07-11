@@ -2,22 +2,22 @@ require 'em-websocket'
 require 'directory_watcher'
 
 module LiveReload
+  def self.start_watching ws
+    $dw.add_observer { |*args|
+      args.each { |event|
+        if event[:type] == :modified
+          name = File.basename(event[:path]) 
+          puts "Modified: #{name}"
+          ws.send name
+        end
+      }
+    }
+    $dw.start
+  end
+
   def self.run(host, port, dir, exts)
     EM.kqueue = true
     $dw = DirectoryWatcher.new dir, :glob => "**/*.{#{exts}}", :scanner => :em
-
-    def start_watching ws
-      $dw.add_observer { |*args|
-        args.each { |event|
-          if event[:type] == :modified
-            name = File.basename(event[:path]) 
-            puts "Modified: #{name}"
-            ws.send name
-          end
-        }
-      }
-      $dw.start
-    end
 
     puts
     puts "Port:       #{port}"
