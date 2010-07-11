@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+   <key>Extension Updates</key>
+   <array>
+     <dict>
+       <key>CFBundleIdentifier</key>
+       <string>com.mockko.livereload</string>
+       <key>Developer Identifier</key>
+       <string>D963M2VVCH</string>
+       <key>CFBundleVersion</key>
+       <string>1.0</string>
+       <key>CFBundleShortVersionString</key>
+       <string>1.0</string>
+       <key>URL</key>
+       <string>http://github.com/downloads/mockko/livereload/LiveReload-1.0.safariextz</string>
+     </dict>
+   </array>
+</dict>
+</plist>
