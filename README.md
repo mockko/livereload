@@ -10,6 +10,8 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 What's new?
 -----------
 
+1.2.1: added workaround for Chrome bug (unable to open WebSocket to localhost), fixed problem with command-line tool trying to use kqueue on Linux.
+
 1.2: added Chrome extension, added icon artwork, added a check that the command-line tool version is compatible with the extension version, fixed a bug with multiple stylesheet updates happening too fast.
 
 1.1: enabled autoupdating for the Safari extension.
