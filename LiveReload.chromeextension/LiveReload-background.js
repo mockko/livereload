@@ -4,10 +4,13 @@ var ws = null;
 var disconnectionReason = 'unexpected';
 var version = "1.2";
 var versionInfoReceived = false;
+// localhost does not work on Linux b/c of http://code.google.com/p/chromium/issues/detail?id=36652,
+// 0.0.0.0 does not work on Windows
+var host = (navigator.appVersion.indexOf("Linux") >= 0 ? "0.0.0.0" : "localhost");
 
 function establishConnection() {
     if (ws != null) return;
-    ws = new WebSocket("ws://localhost:10083/websocket");
+    ws = new WebSocket("ws://" + host + ":10083/websocket");
     disconnectionReason = 'cannot-connect';
     versionInfoReceived = false;
     ws.onmessage = function(evt) {
