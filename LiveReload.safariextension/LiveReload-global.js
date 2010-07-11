@@ -44,7 +44,6 @@ safari.application.addEventListener("command", function(event) {
         if (activeTab == tab) {
             closeConnection();
             activeTab = null;
-            activeTab.page.dispatchMessage("LiveReload", "disabled");
         } else {
             var wasActive = (activeTab != null);
             try {
