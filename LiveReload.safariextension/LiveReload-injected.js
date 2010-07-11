@@ -41,40 +41,39 @@ function reloadStylesheet(element) {
     var clone = element.cloneNode(false);
     clone.href = this.generateNextUrl(element.href);
     insertAfter(clone, element);
+    element.reloadingViaLiveReload = 1;
     setTimeout(function() {
-        element.parentNode.removeChild(element);
-    }, 2000);
+        if (element.parentNode)
+            element.parentNode.removeChild(element);
+    }, 1000);
 }
 
-safari.self.addEventListener("message", function(event) {
-    var nameToReload, scripts, script, links, link, name, found;
-    if (event.name == 'LiveReload') {
-        nameToReload = event.message;
+function performLiveReload(nameToReload) {
+    var scripts, script, links, link, name, found = false;
 
-        found = false;
-
-        if (!found) {
-            scripts = document.getElementsByTagName("script");
-            for (var i = 0; i < scripts.length; i++) {
-                script = scripts[i];
-                if (script.src) {
-                    name = baseName(script.src);
-                    if (name == nameToReload) {
-                        reloadScript(script);
-                        found = true;
-                        break;
-                    }
+    if (!found) {
+        scripts = document.getElementsByTagName("script");
+        for (var i = 0; i < scripts.length; i++) {
+            script = scripts[i];
+            if (script.src) {
+                name = baseName(script.src);
+                if (name == nameToReload) {
+                    reloadScript(script);
+                    found = true;
+                    break;
                 }
             }
         }
+    }
 
-        if (!found) {
-            links = document.getElementsByTagName("link");
-            for (var i = 0; i < links.length; i++) {
-                link = links[i];
-                if (link.href) {
-                    name = baseName(link.href);
-                    if (name == nameToReload) {
+    if (!found) {
+        links = document.getElementsByTagName("link");
+        for (var i = 0; i < links.length; i++) {
+            link = links[i];
+            if (link.href) {
+                name = baseName(link.href);
+                if (name == nameToReload) {
+                    if (!link.reloadingViaLiveReload) {
                         reloadStylesheet(link);
                         found = true;
                         break;
@@ -82,10 +81,18 @@ safari.self.addEventListener("message", function(event) {
                 }
             }
         }
+    }
 
-        if (!found) {
-            console.log("Reloading full page because the changed \"" + nameToReload + "\" does not correspond to any SCRIPT or LINK.")
-            window.location.reload();
-        }
+    if (!found) {
+        console.log("Reloading full page because the changed \"" + nameToReload + "\" does not correspond to any SCRIPT or LINK.")
+        window.location.reload();
+    }
+}
+
+// Safari
+
+safari.self.addEventListener("message", function(event) {
+    if (event.name == 'LiveReload') {
+        performLiveReload(event.message)
     }
 }, false);
