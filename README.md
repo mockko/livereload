@@ -7,6 +7,14 @@ LiveReload is a Safari extension + a command-line tool that:
 2. Automatically reloads a page when any other file changes (html, image, server-side script, etc).
 
 
+What's new?
+-----------
+
+1.1: enabled autoupdating for the Safari extension.
+
+1.0: original release -- Safari extension and a command-line tool in a Ruby gem.
+
+
 Installing
 ----------
 
@@ -16,7 +24,7 @@ Installing
 
 2. If you haven't already, [you need to enable Safari extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
 
-3. Download [LiveReload 1.0 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.0.safariextz). Double-click it, and Safari will prompt to install it:
+3. Download [LiveReload 1.1 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.1.safariextz). Double-click it, and Safari will prompt to install it:
 
 ![](http://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
 
