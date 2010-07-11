@@ -18,7 +18,7 @@ module LiveReload
   end
 
   def self.run(host, port, dir, exts)
-    EM.kqueue = true
+    EM.kqueue = true if EM.kqueue?
     $dw = DirectoryWatcher.new dir, :glob => "**/*.{#{exts}}", :scanner => :em
 
     puts
