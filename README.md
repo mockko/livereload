@@ -10,6 +10,14 @@ Watch an [awesome screencast by Gregg Pollack](http://blog.envylabs.com/2010/07/
 
 **Warning: Windows is not supported yet.** We now have Windows installation instructions, but the directory watching does not work. Will be fixed later this week with transition to another monitoring API.
 
+**What do our users say?**
+
+“I think LiveReload is going to change the way I work...” [@mheerema](http://twitter.com/mheerema/status/18363670011)
+
+“spent a day using livereload. really impressed, very nice to watch pages update as I add / change code.” [@pollingj](http://twitter.com/pollingj/status/18366550224)
+
+“Gem of the month (quarter?): LiveReload” [@grimen](http://twitter.com/grimen/status/18369684099)
+
 
 What's new?
 -----------
