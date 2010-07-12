@@ -8,11 +8,15 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 
 Watch an [awesome screencast by Gregg Pollack](http://blog.envylabs.com/2010/07/livereload-screencast/) at envylabs.com.
 
+**Warning: Windows is not supported yet.** We now have Windows installation instructions, but the directory watching does not work. Will be fixed later this week with transition to another monitoring API.
+
 
 What's new?
 -----------
 
 Want to know about latest developments and smart tricks? Follow [@livereload](http://twitter.com/livereload) on Twitter!
+
+1.2.2: add .erb to the list of monitored extensions (this is a gem-only update, run `gem update livereload` to install).
 
 1.2.1: added workaround for Chrome bug (unable to open WebSocket to localhost), fixed problem with command-line tool trying to use kqueue on Linux.
 
@@ -28,9 +32,18 @@ Installing in Safari
 
 1. You need Ruby installed. Mac OS X users already have it, Windows users get it from [ruby-lang.org](http://www.ruby-lang.org/en/downloads/).
 
-2. Install the command-line tool:
+2. Install the command-line tool. On OS X and Linux:
 
+        sudo gem update --system
         sudo gem install livereload
+
+    on Windows:
+
+        gem update --system
+        gem install eventmachine --platform=win32
+        gem install livereload
+
+    (warning: Windows is not supported yet, see the warning in the beginning)
 
 3. If you haven't already, [you need to enable Safari extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
 
@@ -44,9 +57,18 @@ Installing in Chrome
 
 1. You need Ruby installed. Mac OS X users already have it, Windows users get it from [ruby-lang.org](http://www.ruby-lang.org/en/downloads/).
 
-2. Install the command-line tool:
+2. Install the command-line tool. On OS X and Linux:
 
+        sudo gem update --system
         sudo gem install livereload
+
+    on Windows:
+
+        gem update --system
+        gem install eventmachine --platform=win32
+        gem install livereload
+
+    (warning: Windows is not supported yet, see the warning in the beginning)
 
 3. Visit the [LiveReload page](https://chrome.google.com/extensions/detail/jnihajbhpnppcggbcgedagnkighmdlei) on Chrome Extension Gallery and click Install. Confirm the installation:
 
@@ -86,6 +108,8 @@ Until this is fixed, you may want to increase your `ulimit -n`:
 
     ulimit -n 4096
     livereload
+
+Does not work on Windows (yet!)
 
 
 Limitations
