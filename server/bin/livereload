@@ -3,7 +3,7 @@ require 'rubygems'
 require 'livereload'
 
 dir = File.expand_path('.')
-exts = "html,css,js,png,gif,jpg,php,py,rb"
+exts = "html,css,js,png,gif,jpg,php,py,rb,erb"
 host = "0.0.0.0"
 port = 10083
 LiveReload.run host, port, dir, exts
