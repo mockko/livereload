@@ -1,6 +1,9 @@
 require 'em-websocket'
 require 'directory_watcher'
 
+# Chrome sometimes sends HTTP/1.0 requests in violation of WebSockets spec
+EventMachine::WebSocket::HandlerFactory::PATH = /^(\w+) (\/[^\s]*) HTTP\/1\.[01]$/
+
 module LiveReload
   VERSION = "1.2"
 
