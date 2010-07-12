@@ -19,6 +19,7 @@ module LiveReload
 
   def self.run(host, port, dir, exts)
     EM.kqueue = true if EM.kqueue?
+    # Could someone with more knowledge of glob specify that the ".git" directory should not be searched
     $dw = DirectoryWatcher.new dir, :glob => "**/*.{#{exts}}", :scanner => :em
 
     puts
