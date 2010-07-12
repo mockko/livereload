@@ -71,6 +71,17 @@ Now, if you are using Safari, right-click the page you want to be livereload'ed 
 If you are using Chrome, just click the toolbar button (it will turn green to indicate that LiveReload is active).
 
 
+Known Issues (please read!)
+---------------------------
+
+The command-line tool uses a lame per-file watching API from EventMachine and runs out of open file limit on large projects. In Chrome, this looks like a broken connection immediately after you connect. In Safari, this looks like a crash (since Safari crashes if websocket is disconnected during handshake).
+
+Until this is fixed, you may want to increase your `ulimit -n`:
+
+    ulimit -n 4096
+    livereload
+
+
 Limitations
 -----------
 
