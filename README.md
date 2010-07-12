@@ -10,6 +10,8 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 What's new?
 -----------
 
+Want to know about latest developments and smart tricks? Follow [@livereload](http://twitter.com/livereload) on Twitter!
+
 1.2.1: added workaround for Chrome bug (unable to open WebSocket to localhost), fixed problem with command-line tool trying to use kqueue on Linux.
 
 1.2: added Chrome extension, added icon artwork, added a check that the command-line tool version is compatible with the extension version, fixed a bug with multiple stylesheet updates happening too fast.
@@ -69,6 +71,8 @@ Now, if you are using Safari, right-click the page you want to be livereload'ed 
 ![](http://github.com/mockko/livereload/raw/master/docs/images/safari-context-menu.png)
 
 If you are using Chrome, just click the toolbar button (it will turn green to indicate that LiveReload is active).
+
+Looking to also process CoffeeScript, SASS, LessCSS or HAML? Here's a [Rakefile that does that live too](http://gist.github.com/472349).
 
 
 Known Issues (please read!)
