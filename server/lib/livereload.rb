@@ -111,15 +111,19 @@ module LiveReload
 
     def initialize directory, explicit_config=nil
       @directory = directory
+      @explicit_config = explicit_config
+      read_config
+    end
 
-      project_config_file = File.join(directory, '.livereload')
+    def read_config
+      project_config_file = File.join(@directory, '.livereload')
       unless File.file? project_config_file
         File.open(project_config_file, 'w') do |file|
           file.write PROJECT_CONFIG_FILE_TEMPLATE
         end
       end
       project_config = Config.load_from project_config_file
-      @config = Config.merge(DEFAULT_CONFIG, USER_CONFIG, project_config, explicit_config)
+      @config = Config.merge(DEFAULT_CONFIG, USER_CONFIG, project_config, @explicit_config)
     end
 
     def print_config
@@ -150,14 +154,23 @@ module LiveReload
       end
     end
 
-    def start_watching
-      dw = DirectoryWatcher.new @directory, :glob => "**/*.{#{@config.exts.join(',')}}", :scanner => :em
-      dw.add_observer do |*args|
+    def when_changes_detected &block
+      @when_changes_detected = block
+    end
+
+    def restart_watching
+      if @dw
+        @dw.stop
+      end
+      @dw = DirectoryWatcher.new @directory, :glob => "{.livereload,**/*.{#{@config.exts.join(',')}}}", :scanner => :em, :pre_load => true
+      @dw.add_observer do |*args|
         begin
           args.each do |event|
-            if event[:type] == :modified
-              path = event[:path]
-              yield [path, is_excluded?(path)]
+            path = event[:path]
+            if File.basename(path) == '.livereload'
+              @when_changes_detected.call [:config_changed, path]
+            elsif event[:type] == :modified
+              @when_changes_detected.call [if is_excluded?(path) then :excluded else :modified end, path]
             end
           end
         rescue
@@ -165,7 +178,7 @@ module LiveReload
           puts $!.backtrace
         end
       end
-      dw.start
+      @dw.start
     end
   end
 
@@ -191,10 +204,20 @@ module LiveReload
 
     EventMachine.run do
       projects.each do |project|
-        project.start_watching do |modified_file, is_excluded|
-          if is_excluded
+        project.when_changes_detected do |event, modified_file|
+          case event
+          when :config_changed
+            puts
+            puts ">> Configuration change: " + modified_file
+            puts
+            EventMachine.next_tick do
+              projects.each { |project| project.read_config; project.print_config }
+              puts
+              projects.each { |project| project.restart_watching }
+            end
+          when :excluded
             puts "Excluded: #{File.basename(modified_file)}"
-          else
+          when :modified
             puts "Modified: #{File.basename(modified_file)}"
             data = ['refresh', { :path => modified_file,
                 :apply_js_live  => project.config.apply_js_live,
@@ -206,6 +229,8 @@ module LiveReload
           end
         end
       end
+
+      projects.each { |project| project.restart_watching }
 
       puts
       puts "LiveReload is waiting for browser to connect."
