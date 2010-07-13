@@ -153,7 +153,9 @@ Syntax is like this:
     # reload the whole page when .css changes
     config.apply_css_live = false
 
-A global settings file (`~/.livereload`) is also supported if you happen to need one. It is merged with per-folder configurations.
+Configuration changes are applied live (it is called *Live* Reload after all, that has to mean something).
+
+A global config file (`~/.livereload`) is also supported if you happen to need one. It is merged with per-folder configurations.
 
 
 Known Issues (please read!)
