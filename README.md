@@ -110,11 +110,11 @@ Looking to also process CoffeeScript, SASS, LessCSS or HAML? Here's a [Rakefile 
 Configuration
 -------------
 
-If you want to:
+To:
 
 * monitor additional extensions (like `.haml`, if you're serving HAML directly from Rails without generating `.html` on disk)
 
-...you need to edit `.livereload` file in the folder you run LiveReload from. (This file is automatically created if it does not exist when you run `livereload`.)
+...you need to edit `.livereload` file in the monitored folder. (This file is automatically created if it does not exist when you run `livereload`.)
 
 Syntax is like this:
 
@@ -125,6 +125,8 @@ More options coming soon:
 
 * instead of live-applying JavaScript changes, just reload the whole page on `.js` changes (if live application causes bugs in your code)
 * exclude some directories or files from monitoring
+
+A global settings file (`~/.livereload`) is also supported if you happen to need one. It is merged with per-folder configurations.
 
 
 Known Issues (please read!)
