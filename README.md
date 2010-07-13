@@ -124,19 +124,32 @@ Configuration
 
 To:
 
+* exclude some directories or files from monitoring
+
 * monitor additional extensions (like `.haml`, if you're serving HAML directly from Rails without generating `.html` on disk)
+
+* reload the whole page when `.js` changes instead of applying the changes live
 
 ...you need to edit `.livereload` file in the monitored folder. (This file is automatically created if it does not exist when you run `livereload`.)
 
 Syntax is like this:
 
-    # monitor an additional extension
-    config.exts += ['haml']
+    # Lines starting with pound sign (#) are ignored.
 
-More options coming soon:
+    # additional extensions to monitor
+    config.exts << 'haml'
 
-* instead of live-applying JavaScript changes, just reload the whole page on `.js` changes (if live application causes bugs in your code)
-* exclude some directories or files from monitoring
+    # exclude files with NAMES matching this mask
+    config.exclusions << '~*'
+    # exclude files with PATHS matching this mask (if the mask contains a slash)
+    config.exclusions << '/excluded_dir/*'
+    # exclude files with PATHS matching this REGEXP
+    config.exclusions << /somedir.*(ab){2,4}.(css|js)$/
+
+    # reload the whole page when .js changes
+    config.apply_js_live = false
+    # reload the whole page when .css changes
+    config.apply_css_live = false
 
 A global settings file (`~/.livereload`) is also supported if you happen to need one. It is merged with per-folder configurations.
 

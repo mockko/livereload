@@ -23,7 +23,15 @@ module LiveReload
   # Lines starting with pound sign (#) are ignored.
 
   # additional extensions to monitor
-  #config.exts += ['haml', 'mytempl']
+  #config.exts << 'haml'
+
+  # exclude files with NAMES matching this mask
+  #config.exclusions << '~*'
+  # exclude files with PATHS matching this mask (if the mask contains a slash)
+  #config.exclusions << '/excluded_dir/*'
+  # exclude files with PATHS matching this REGEXP
+  #config.exclusions << /somedir.*(ab){2,4}\.(css|js)$/
+
   # reload the whole page when .js changes
   #config.apply_js_live = false
   # reload the whole page when .css changes
@@ -32,13 +40,14 @@ module LiveReload
 
   # note that host and port options do not make sense in per-project config files
   class Config
-    attr_accessor :host, :port, :exts, :debug, :apply_js_live, :apply_css_live
+    attr_accessor :host, :port, :exts, :exclusions, :debug, :apply_js_live, :apply_css_live
 
     def initialize &block
-      @host  = nil
-      @port  = nil
-      @debug = nil
-      @exts  = []
+      @host           = nil
+      @port           = nil
+      @debug          = nil
+      @exts           = []
+      @exclusions     = []
       @apply_js_live  = nil
       @apply_css_live = nil
 
@@ -53,12 +62,13 @@ module LiveReload
     end
 
     def merge! other
-      @host   = other.host  if other.host
-      @port   = other.port  if other.port
-      @exts  += other.exts
-      @debug  = other.debug if other.debug != nil
-      @apply_js_live  = other.apply_js_live  if other.apply_js_live != nil
-      @apply_css_live = other.apply_css_live if other.apply_css_live != nil
+      @host           = other.host             if other.host
+      @port           = other.port             if other.port
+      @exts          += other.exts
+      @exclusions     = other.exclusions + @exclusions
+      @debug          = other.debug            if other.debug != nil
+      @apply_js_live  = other.apply_js_live    if other.apply_js_live != nil
+      @apply_css_live = other.apply_css_live   if other.apply_css_live != nil
 
       self
     end
@@ -88,6 +98,7 @@ module LiveReload
     config.host  = '0.0.0.0'
     config.port  = 10083
     config.exts  = %w/html css js png gif jpg php php5 py rb erb/
+    config.exclusions = %w!*/.git/* */.svn/* */.hg/*!
     config.apply_js_live  = true
     config.apply_css_live = true
   end
@@ -121,16 +132,37 @@ module LiveReload
       elsif !@config.apply_css_live
         puts "  - live refreshing disabled for .css: will reload the whole page when .css is changed"
       end
+      if @config.exclusions.size > 0
+        puts "  - excluding changes in: " + @config.exclusions.join(" ")
+      end
+    end
+    
+    def is_excluded? path
+      basename = File.basename(path)
+      @config.exclusions.any? do |exclusion|
+        if Regexp === exclusion
+          path =~ exclusion
+        elsif exclusion.include? '/'
+          File.fnmatch?(File.join(@directory, exclusion), path)
+        else
+          File.fnmatch?(exclusion, basename)
+        end
+      end
     end
 
     def start_watching
       dw = DirectoryWatcher.new @directory, :glob => "**/*.{#{@config.exts.join(',')}}", :scanner => :em
       dw.add_observer do |*args|
-        args.each do |event|
-          if event[:type] == :modified
-            name = File.basename(event[:path])
-            yield name
+        begin
+          args.each do |event|
+            if event[:type] == :modified
+              path = event[:path]
+              yield [path, is_excluded?(path)]
+            end
           end
+        rescue
+          puts $!
+          puts $!.backtrace
         end
       end
       dw.start
@@ -159,14 +191,18 @@ module LiveReload
 
     EventMachine.run do
       projects.each do |project|
-        project.start_watching do |modified_file|
-          puts "Modified: #{modified_file}"
-          data = ['refresh', { :path => modified_file,
-              :apply_js_live  => project.config.apply_js_live,
-              :apply_css_live => project.config.apply_css_live }].to_json
-          puts data if global_config.debug
-          web_sockets.each do |ws|
-            ws.send data
+        project.start_watching do |modified_file, is_excluded|
+          if is_excluded
+            puts "Excluded: #{File.basename(modified_file)}"
+          else
+            puts "Modified: #{File.basename(modified_file)}"
+            data = ['refresh', { :path => modified_file,
+                :apply_js_live  => project.config.apply_js_live,
+                :apply_css_live => project.config.apply_css_live }].to_json
+            puts data if global_config.debug
+            web_sockets.each do |ws|
+              ws.send data
+            end
           end
         end
       end
