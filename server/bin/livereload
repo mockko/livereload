@@ -2,5 +2,5 @@
 require 'rubygems'
 require 'livereload'
 
-dir = File.expand_path('.')
-LiveReload.run dir, nil
+directories = if ARGV.size == 0 then ['.'] else ARGV end
+LiveReload.run directories, nil

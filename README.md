@@ -104,6 +104,16 @@ Now, if you are using Safari, right-click the page you want to be livereload'ed 
 
 If you are using Chrome, just click the toolbar button (it will turn green to indicate that LiveReload is active).
 
+
+Advanced Usage
+--------------
+
+If you want to monitor several directories, pass them on the command line:
+
+    % livereload /some/dir /another/dir /one/more/dir
+
+(in this case it does not matter which directory you run `livereload` from)
+
 Looking to also process CoffeeScript, SASS, LessCSS or HAML? Here's a [Rakefile that does that live too](http://gist.github.com/472349).
 
 

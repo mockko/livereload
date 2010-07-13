@@ -121,7 +121,7 @@ module LiveReload
     yield Config
   end
 
-  def self.run(directory, explicit_config)
+  def self.run(directories, explicit_config)
     # EventMachine needs to run kqueue for the watching API to work
     EM.kqueue = true if EM.kqueue?
 
@@ -129,18 +129,21 @@ module LiveReload
 
     # for host and port
     global_config = Config.merge(DEFAULT_CONFIG, USER_CONFIG)
-    project = Project.new(directory, explicit_config)
+    directories = directories.collect { |directory| File.expand_path(directory) }
+    projects = directories.collect { |directory| Project.new(directory, explicit_config) }
 
     puts
     puts "Version:  #{GEM_VERSION}  (compatible with browser extension versions #{API_VERSION}.x)"
     puts "Port:     #{global_config.port}"
-    project.print_config
+    projects.each { |project| project.print_config }
 
     EventMachine.run do
-      project.start_watching do |modified_file|
-        puts "Modified: #{modified_file}"
-        web_sockets.each do |ws|
-          ws.send modified_file
+      projects.each do |project|
+        project.start_watching do |modified_file|
+          puts "Modified: #{modified_file}"
+          web_sockets.each do |ws|
+            ws.send modified_file
+          end
         end
       end
 
