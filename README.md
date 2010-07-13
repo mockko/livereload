@@ -24,6 +24,8 @@ What's new?
 
 Want to know about latest developments and smart tricks? Follow [@livereload](http://twitter.com/livereload) on Twitter!
 
+Feel like chatting? Join us at livereload@jaconda.im — just add this contact to your Jabber / Google Talk. (Please don't overuse this chat feature, we're trying to get some work done too!)
+
 1.2.2: add .erb to the list of monitored extensions (this is a gem-only update, run `gem update livereload` to install).
 
 1.2.1: added workaround for Chrome bug (unable to open WebSocket to localhost), fixed problem with command-line tool trying to use kqueue on Linux.
