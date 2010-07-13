@@ -107,6 +107,26 @@ If you are using Chrome, just click the toolbar button (it will turn green to in
 Looking to also process CoffeeScript, SASS, LessCSS or HAML? Here's a [Rakefile that does that live too](http://gist.github.com/472349).
 
 
+Configuration
+-------------
+
+If you want to:
+
+* monitor additional extensions (like `.haml`, if you're serving HAML directly from Rails without generating `.html` on disk)
+
+...you need to edit `.livereload` file in the folder you run LiveReload from. (This file is automatically created if it does not exist when you run `livereload`.)
+
+Syntax is like this:
+
+    # monitor an additional extension
+    config.exts += ['haml']
+
+More options coming soon:
+
+* instead of live-applying JavaScript changes, just reload the whole page on `.js` changes (if live application causes bugs in your code)
+* exclude some directories or files from monitoring
+
+
 Known Issues (please read!)
 ---------------------------
 
