@@ -59,7 +59,7 @@ Installing in Safari
 
 3. If you haven't already, [you need to enable Safari extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
 
-4. Download [LiveReload 1.2 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.2.safariextz). Double-click it and confirm installation:
+4. Download [LiveReload 1.3 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.3.safariextz). Double-click it and confirm installation:
 
 ![](http://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
 
