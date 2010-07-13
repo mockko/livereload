@@ -114,7 +114,7 @@ If you want to monitor several directories, pass them on the command line:
 
 (in this case it does not matter which directory you run `livereload` from)
 
-Looking to also process CoffeeScript, SASS, LessCSS or HAML? Here's a [Rakefile that does that live too](http://gist.github.com/472349).
+Looking to also process CoffeeScript, SASS, LessCSS or HAML? Here's a [Rakefile that does that live too](http://gist.github.com/472349). (Please read the comments if you're using HAML for templates in a Rails app.)
 
 
 Configuration
