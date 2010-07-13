@@ -19,11 +19,18 @@ function establishConnection() {
         if (m = data.match(/!!ver:([\d.]+)/)) {
             versionInfoReceived = true;
             if (m[1] != api_version) {
-                alert("You are using an incompatible version of the command-line tool.\n\n" +
-                    "Extension version: " + api_version + "\n" +
-                    "Command-line tool version: " + m[1] + "\n\n" +
-                    "Please run the following command to update your command-line tool:\n" +
-                    "    gem update livereload");
+                if (api_version > m[1]) {
+                    alert("You need to update the command-line tool to continue using LiveReload.\n\n" +
+                        "Extension version: " + api_version + "\n" +
+                        "Command-line tool version: " + m[1] + "\n\n" +
+                        "Please run the following command to update your command-line tool:\n" +
+                        "    gem update livereload");
+                } else {
+                    alert("You need to update the browser extension to continue using LiveReload.\n\n" +
+                        "Extension version: " + api_version + "\n" +
+                        "Command-line tool version: " + m[1] + "\n\n" +
+                        "Please go to the extensions manager and check for updates.");
+                }
                 disconnectionReason = 'version-mismatch';
                 ws.close();
                 deactivated();
