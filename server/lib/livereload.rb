@@ -20,7 +20,7 @@ class Object
 end
 
 module LiveReload
-  GEM_VERSION = "1.2.2"
+  GEM_VERSION = "1.3"
   API_VERSION = "1.3"
 
   PROJECT_CONFIG_FILE_TEMPLATE = <<-END.strip.split("\n").collect { |line| line.strip + "\n" }.join("")
