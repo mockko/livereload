@@ -193,7 +193,7 @@ module LiveReload
     web_sockets = []
 
     # for host and port
-    global_config = Config.merge(DEFAULT_CONFIG, USER_CONFIG)
+    global_config = Config.merge(DEFAULT_CONFIG, USER_CONFIG, explicit_config)
     directories = directories.collect { |directory| File.expand_path(directory) }
     projects = directories.collect { |directory| Project.new(directory, explicit_config) }
 

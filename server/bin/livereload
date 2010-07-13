@@ -1,6 +1,51 @@
 #! /usr/bin/env ruby
 require 'rubygems'
 require 'livereload'
+require 'optparse'
+
+def parse_command_line_config(args)
+  LiveReload::Config.new do |config|
+
+    opts = OptionParser.new do |opts|
+      opts.banner = "Usage: livereload [options] [directory1 directory2 ...]"
+
+      opts.separator ""
+      opts.separator "Browser communication options:"
+
+      opts.on("--address [ADDRESS]", "Network interface to listen on (default is 0.0.0.0)") do |v|
+        config.host = v
+      end
+
+      opts.on("--port [PORT]", Integer, "TCP port to listen on (default is 10083)") do |v|
+        config.port = v.to_i
+      end
+
+      opts.separator ""
+      opts.separator "Debugging options:"
+
+      opts.on("-D", "--[no-]debug", "Print debugging info") do |v|
+        config.debug = v
+      end
+
+      opts.separator ""
+      opts.separator "Common options:"
+
+      opts.on_tail("-h", "--help", "Show this message") do
+        puts opts
+        exit
+      end
+
+      opts.on_tail("--version", "Show version") do
+        puts LiveReload::GEM_VERSION
+        exit
+      end
+    end
+
+    opts.parse!(args)
+  end
+end
+
+explicit_config = parse_command_line_config(ARGV)
 
 directories = if ARGV.size == 0 then ['.'] else ARGV end
-LiveReload.run directories, nil
+LiveReload.run directories, explicit_config
