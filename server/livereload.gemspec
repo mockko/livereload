@@ -18,4 +18,5 @@ Gem::Specification.new do |s|
    s.requirements << 'LiveReload Safari extension'
    s.add_dependency('em-websocket', '>= 0.1.2')
    s.add_dependency('directory_watcher', '>= 1.3.2')
+   s.add_dependency('ruby-json', '>= 1.1.2')
 end

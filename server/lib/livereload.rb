@@ -1,5 +1,6 @@
 require 'em-websocket'
 require 'directory_watcher'
+require 'json/objects'
 
 # Chrome sometimes sends HTTP/1.0 requests in violation of WebSockets spec
 EventMachine::WebSocket::HandlerFactory::PATH = /^(\w+) (\/[^\s]*) HTTP\/1\.[01]$/
@@ -16,24 +17,30 @@ end
 
 module LiveReload
   GEM_VERSION = "1.2.2"
-  API_VERSION = "1.2"
+  API_VERSION = "1.3"
 
   PROJECT_CONFIG_FILE_TEMPLATE = <<-END.strip.split("\n").collect { |line| line.strip + "\n" }.join("")
   # Lines starting with pound sign (#) are ignored.
 
   # additional extensions to monitor
   #config.exts += ['haml', 'mytempl']
+  # reload the whole page when .js changes
+  #config.apply_js_live = false
+  # reload the whole page when .css changes
+  #config.apply_css_live = false
   END
 
   # note that host and port options do not make sense in per-project config files
   class Config
-    attr_accessor :host, :port, :exts, :debug
+    attr_accessor :host, :port, :exts, :debug, :apply_js_live, :apply_css_live
 
     def initialize &block
       @host  = nil
       @port  = nil
       @debug = nil
       @exts  = []
+      @apply_js_live  = nil
+      @apply_css_live = nil
 
       update!(&block) if block
     end
@@ -50,6 +57,8 @@ module LiveReload
       @port   = other.port  if other.port
       @exts  += other.exts
       @debug  = other.debug if other.debug != nil
+      @apply_js_live  = other.apply_js_live  if other.apply_js_live != nil
+      @apply_css_live = other.apply_css_live if other.apply_css_live != nil
 
       self
     end
@@ -79,12 +88,16 @@ module LiveReload
     config.host  = '0.0.0.0'
     config.port  = 10083
     config.exts  = %w/html css js png gif jpg php php5 py rb erb/
+    config.apply_js_live  = true
+    config.apply_css_live = true
   end
 
   USER_CONFIG_FILE = File.expand_path("~/.livereload")
   USER_CONFIG = Config.load_from(USER_CONFIG_FILE)
 
   class Project
+    attr_reader :config
+
     def initialize directory, explicit_config=nil
       @directory = directory
 
@@ -101,6 +114,13 @@ module LiveReload
     def print_config
       puts "Watching: #{@directory}"
       puts "  - extensions: " + @config.exts.collect {|e| ".#{e}"}.join(" ")
+      if !@config.apply_js_live && !@config.apply_css_live
+        puts "  - live refreshing disabled for .css & .js: will reload the whole page on every change"
+      elsif !@config.apply_js_live
+        puts "  - live refreshing disabled for .js: will reload the whole page when .js is changed"
+      elsif !@config.apply_css_live
+        puts "  - live refreshing disabled for .css: will reload the whole page when .css is changed"
+      end
     end
 
     def start_watching
@@ -141,8 +161,12 @@ module LiveReload
       projects.each do |project|
         project.start_watching do |modified_file|
           puts "Modified: #{modified_file}"
+          data = ['refresh', { :path => modified_file,
+              :apply_js_live  => project.config.apply_js_live,
+              :apply_css_live => project.config.apply_css_live }].to_json
+          puts data if global_config.debug
           web_sockets.each do |ws|
-            ws.send modified_file
+            ws.send data
           end
         end
       end

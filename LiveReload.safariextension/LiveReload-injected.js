@@ -1,6 +1,10 @@
 
 function baseName(s) {
-    return s.replace(/\?.*$/, '').replace(/^.*\//, '');
+    return s
+        .replace(/\?.*$/, '')  // strip query string if any
+        .replace(/\\/, '/')    // Windows backward slashes
+        .replace(/^.*\//, '')  // strip the path
+        .replace(/^.*:/, '');  // strip the drive part for rare cases like "c:foo.txt" (yeah, I'm paranoid)
 }
 
 var insertAfter = function(newElement, targetElement) {
@@ -48,10 +52,21 @@ function reloadStylesheet(element) {
     }, 1000);
 }
 
-function performLiveReload(nameToReload) {
+function performLiveReload(data) {
+    var parsed = JSON.parse(data);
     var scripts, script, links, link, name, found = false;
 
-    if (!found) {
+    if (parsed[0] != "refresh") {
+        console.error("Unknown command: " + parsed[0]);
+        return;
+    }
+
+    var options = parsed[1];
+    var nameToReload = baseName(options.path);
+    var applyJSLive = (options.apply_js_live !== undefined ? !!options.apply_js_live : true);
+    var applyCSSLive = (options.apply_css_live !== undefined ? !!options.apply_css_live : true);
+
+    if (applyJSLive && !found) {
         scripts = document.getElementsByTagName("script");
         for (var i = 0; i < scripts.length; i++) {
             script = scripts[i];
@@ -66,7 +81,7 @@ function performLiveReload(nameToReload) {
         }
     }
 
-    if (!found) {
+    if (applyCSSLive && !found) {
         links = document.getElementsByTagName("link");
         for (var i = 0; i < links.length; i++) {
             link = links[i];
@@ -84,7 +99,7 @@ function performLiveReload(nameToReload) {
     }
 
     if (!found) {
-        console.log("Reloading full page because the changed \"" + nameToReload + "\" does not correspond to any SCRIPT or LINK.")
+        console.log("LiveReload: reloading the full page because \"" + nameToReload + "\" does not correspond to any SCRIPT or LINK.")
         window.location.reload();
     }
 }

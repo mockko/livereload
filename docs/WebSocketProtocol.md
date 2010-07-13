@@ -2,7 +2,9 @@ WebSocket Protocol Details
 ==========================
 
 
-API (aka protocol) version 1.2 is extremely simple.
+API version 1.3 uses JSON in the server-to-browser direction.
+
+API version 1.2 was an extremely simple one.
 
 
 Handshake
@@ -10,17 +12,27 @@ Handshake
 
 After the connection is initiated, the server immediately sends API version info to the browser:
 
-    !!ver:1.2
+    !!ver:1.3
 
 If the browser is okay to speak this API version, it does nothing. If the browser does not support this version, it closes the connection.
+
+
+JSON command format
+-------------------
+
+General format of a JSON command is:
+
+["command_name", args]
 
 
 File Modified
 -------------
 
-When a file is modified, the name (without a path) is sent to the browser:
+When a file is modified, the full path is sent to the browser as a “refresh” command:
 
-    myfile.css
+    ["refresh", { "path": "/some/path/myfile.css", "apply_js_live": true, "apply_css_live": true }]
+
+`path` is required; `apply_js_live` and `apply_css_live` are optional.
 
 
 URL Change

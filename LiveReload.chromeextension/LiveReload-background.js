@@ -2,7 +2,7 @@
 var activeTabId = null;
 var ws = null;
 var disconnectionReason = 'unexpected';
-var version = "1.2";
+var api_version = "1.3";
 var versionInfoReceived = false;
 // localhost does not work on Linux b/c of http://code.google.com/p/chromium/issues/detail?id=36652,
 // 0.0.0.0 does not work on Windows
@@ -18,9 +18,9 @@ function establishConnection() {
         var m, data = evt.data;
         if (m = data.match(/!!ver:([\d.]+)/)) {
             versionInfoReceived = true;
-            if (m[1] != version) {
+            if (m[1] != api_version) {
                 alert("You are using an incompatible version of the command-line tool.\n\n" +
-                    "Extension version: " + version + "\n" +
+                    "Extension version: " + api_version + "\n" +
                     "Command-line tool version: " + m[1] + "\n\n" +
                     "Please run the following command to update your command-line tool:\n" +
                     "    gem update livereload");
