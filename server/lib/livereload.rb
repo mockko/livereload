@@ -3,7 +3,11 @@ require 'directory_watcher'
 require 'json/objects'
 
 # Chrome sometimes sends HTTP/1.0 requests in violation of WebSockets spec
+# hide the warning about redifinition of a constant
+saved_stderr = $stderr
+$stderr = StringIO.new
 EventMachine::WebSocket::HandlerFactory::PATH = /^(\w+) (\/[^\s]*) HTTP\/1\.[01]$/
+$stderr = saved_stderr
 
 class Object
   def method_missing_with_livereload id, *args, &block
