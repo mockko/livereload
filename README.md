@@ -6,6 +6,8 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 1. Applies CSS and JavaScript file changes without reloading a page.
 2. Automatically reloads a page when any other file changes (html, image, server-side script, etc).
 
+![](http://github.com/mockko/livereload/raw/master/artwork/screenshot.png)
+
 Watch an [awesome screencast by Gregg Pollack](http://blog.envylabs.com/2010/07/livereload-screencast/) at envylabs.com.
 
 **Warning: Windows is not supported yet.** We now have Windows installation instructions, but the directory watching does not work. Will be fixed later this week with transition to another monitoring API.
