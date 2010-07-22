@@ -17,18 +17,20 @@ var insertAfter = function(newElement, targetElement) {
 };
 
 var generateNextUrl = function(url) {
+    var genSuffix = function(separator, prevIndex) {
+        var date = new Date().getTime() + "";
+        var rand = (1+(Math.random()*0x10000)|0);
+        return separator + "livereload=" + (parseInt(prevIndex, 10) + 1)
+            + '-' + date + '-' + rand;
+    }
     url = url+"";
-    var re = /(\?|&)livereload=(\d+)/;
+    var re = /(\?|&)livereload=(\d+)-(\d+)-(\d+)/;
     var m = url.match(re);
     if (!m) { 
-        if (url.indexOf('?')==-1) {
-            return url + '?livereload=1';
-        } else {
-            return url + '&livereload=1';
-        }
+        return url + genSuffix(url.indexOf('?') == -1 ? '?' : ':', 0)
     } else {
-        return url.replace(re, function(match, separator, version) {
-            return separator+"livereload="+(parseInt(version, 10)+1);
+        return url.replace(re, function(match, separator, prevIndex, d, r) {
+            return genSuffix(separator, prevIndex);
         });
     }
 };
