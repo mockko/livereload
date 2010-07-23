@@ -18,7 +18,7 @@ var insertAfter = function(newElement, targetElement) {
 
 var generateNextUrl = function(url) {
     var genSuffix = function(separator, prevIndex) {
-        var date = new Date().getTime() + "";
+        var date = Date.now() + "";
         var rand = (1+(Math.random()*0x10000)|0);
         return separator + "livereload=" + (parseInt(prevIndex, 10) + 1)
             + '-' + date + '-' + rand;
