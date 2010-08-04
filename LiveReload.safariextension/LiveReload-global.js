@@ -7,7 +7,7 @@ var versionInfoReceived = false;
 
 function establishConnection() {
     if (ws != null) return;
-    ws = new WebSocket("ws://localhost:10083/websocket");
+    ws = new WebSocket("ws://localhost:35729/websocket");
     disconnectionReason = 'cannot-connect';
     versionInfoReceived = false;
     ws.onmessage = function(evt) {
@@ -45,7 +45,7 @@ function establishConnection() {
     };
     ws.onclose = function() {
         if (disconnectionReason == 'cannot-connect') {
-            alert("Cannot connect to LiveReload server. Please run livereload command from the directory you want to watch.");
+            alert("Cannot connect to LiveReload server. Please update livereload gem to 1.4 (if you haven't already) and run livereload command from the directory you want to watch.");
         } else if (disconnectionReason == 'broken') {
             alert("LiveReload server connection closed. Please restart the server and re-enable LiveReload.");
         }

@@ -16,7 +16,7 @@ def parse_command_line_config(args)
         config.host = v
       end
 
-      opts.on("--port [PORT]", Integer, "TCP port to listen on (default is 10083)") do |v|
+      opts.on("--port [PORT]", Integer, "TCP port to listen on (default is 35729)") do |v|
         config.port = v.to_i
       end
 
