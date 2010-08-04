@@ -1,5 +1,5 @@
 require 'em-websocket'
-require 'directory_watcher'
+require 'em-dir-watcher'
 require 'json/objects'
 
 # Chrome sometimes sends HTTP/1.0 requests in violation of WebSockets spec
@@ -144,19 +144,6 @@ module LiveReload
         puts "  - excluding changes in: " + @config.exclusions.join(" ")
       end
     end
-    
-    def is_excluded? path
-      basename = File.basename(path)
-      @config.exclusions.any? do |exclusion|
-        if Regexp === exclusion
-          path =~ exclusion
-        elsif exclusion.include? '/'
-          File.fnmatch?(File.join(@directory, exclusion), path)
-        else
-          File.fnmatch?(exclusion, basename)
-        end
-      end
-    end
 
     def when_changes_detected &block
       @when_changes_detected = block
@@ -166,23 +153,18 @@ module LiveReload
       if @dw
         @dw.stop
       end
-      @dw = DirectoryWatcher.new @directory, :glob => "{.livereload,**/*.{#{@config.exts.join(',')}}}", :scanner => :em, :pre_load => true
-      @dw.add_observer do |*args|
+      @dw = EMDirWatcher.watch @directory, ['/.livereload'] + @config.exts.collect { |ext| "*.#{ext}"}, @config.exclusions do |path|
         begin
-          args.each do |event|
-            path = event[:path]
-            if File.basename(path) == '.livereload'
-              @when_changes_detected.call [:config_changed, path]
-            elsif event[:type] == :modified
-              @when_changes_detected.call [if is_excluded?(path) then :excluded else :modified end, path]
-            end
+          if File.basename(path) == '.livereload'
+            @when_changes_detected.call [:config_changed, path]
+          else
+            @when_changes_detected.call [:modified, path]
           end
         rescue
           puts $!
           puts $!.backtrace
         end
       end
-      @dw.start
     end
   end
 
