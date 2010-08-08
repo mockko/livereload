@@ -92,7 +92,7 @@ module LiveReload
       end
 
       def merge *configs
-        configs.reduce(Config.new) { |merged, config| config && merged.merge!(config) || merged }
+        configs.inject(Config.new) { |merged, config| config && merged.merge!(config) || merged }
       end
     end
   end
