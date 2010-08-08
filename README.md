@@ -8,9 +8,9 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 
 ![](http://github.com/mockko/livereload/raw/master/artwork/screenshot.png)
 
-Watch an [awesome screencast by Gregg Pollack](http://blog.envylabs.com/2010/07/livereload-screencast/) at envylabs.com.
+**Please help spread the word — tweet or blog about LiveReload!**
 
-**Warning: Windows is not supported yet.** We now have Windows installation instructions, but the directory watching does not work. Will be fixed later this week with transition to another monitoring API.
+Watch an [awesome screencast by Gregg Pollack](http://blog.envylabs.com/2010/07/livereload-screencast/) at envylabs.com.
 
 **What do our users say?**
 
@@ -30,6 +30,8 @@ Feel like chatting? Join us at livereload@jaconda.im — just add this contact t
 
 1.4: Works on Windows. Sane file system monitoring (had to write it from scratch, see em-dir-watcher gem). Port number changed to 35729 because of a conflict with Zend Server. Added grace period to combine the changes made in rapid succession. Works with Vim.
 
+**Please help spread the word — tweet or blog about LiveReload!**
+
 1.3: Configuration file (`.livereload`) — you can customize extensions, configure exclusions, disable no-reload refreshing. Monitoring of multiple folders. Some bugs fixed.
 
 1.2.2: add .erb to the list of monitored extensions (this is a gem-only update, run `gem update livereload` to install).
@@ -48,18 +50,21 @@ Installing in Safari
 
 1. You need Ruby installed. Mac OS X users already have it, Windows users get it from [ruby-lang.org](http://www.ruby-lang.org/en/downloads/).
 
-2. Install the command-line tool. On OS X and Linux:
+2. Install the command-line tool. On OS X:
 
         sudo gem update --system
         sudo gem install livereload
+
+    on Linux:
+
+        sudo gem update --system
+        sudo gem install rb-inotify livereload
 
     on Windows:
 
         gem update --system
         gem install eventmachine --platform=win32
-        gem install livereload
-
-    (warning: Windows is not supported yet, see the warning in the beginning)
+        gem install win32-changenotify livereload
 
 3. If you haven't already, [you need to enable Safari extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
 
@@ -78,13 +83,16 @@ Installing in Chrome
         sudo gem update --system
         sudo gem install livereload
 
+    on Linux:
+
+        sudo gem update --system
+        sudo gem install rb-inotify livereload
+
     on Windows:
 
         gem update --system
         gem install eventmachine --platform=win32
-        gem install livereload
-
-    (warning: Windows is not supported yet, see the warning in the beginning)
+        gem install win32-changenotify livereload
 
 3. Visit the [LiveReload page](https://chrome.google.com/extensions/detail/jnihajbhpnppcggbcgedagnkighmdlei) on Chrome Extension Gallery and click Install. Confirm the installation:
 
@@ -165,19 +173,6 @@ Syntax is like this:
 Configuration changes are applied live (it is called *Live* Reload after all, that has to mean something).
 
 A global config file (`~/.livereload`) is also supported if you happen to need one. It is merged with per-folder configurations.
-
-
-Known Issues (please read!)
----------------------------
-
-The command-line tool uses a lame per-file watching API from EventMachine and runs out of open file limit on large projects. In Chrome, this looks like a broken connection immediately after you connect. In Safari, this looks like a crash (since Safari crashes if websocket is disconnected during handshake).
-
-Until this is fixed, you may want to increase your `ulimit -n`:
-
-    ulimit -n 4096
-    livereload
-
-Does not work on Windows (yet!)
 
 
 Limitations
