@@ -2,7 +2,7 @@
 var activeTabId = null;
 var ws = null;
 var disconnectionReason = 'unexpected';
-var api_version = "1.3";
+var api_version = "1.4";
 var versionInfoReceived = false;
 // localhost does not work on Linux b/c of http://code.google.com/p/chromium/issues/detail?id=36652,
 // 0.0.0.0 does not work on Windows

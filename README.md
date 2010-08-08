@@ -28,6 +28,8 @@ Want to know about latest developments and smart tricks? Follow [@livereload](ht
 
 Feel like chatting? Join us at livereload@jaconda.im — just add this contact to your Jabber / Google Talk. (Please don't overuse this chat feature, we're trying to get some work done too!)
 
+1.4: Works on Windows. Sane file system monitoring (had to write it from scratch, see em-dir-watcher gem). Port number changed to 35729 because of a conflict with Zend Server. Added grace period to combine the changes made in rapid succession. Works with Vim.
+
 1.3: Configuration file (`.livereload`) — you can customize extensions, configure exclusions, disable no-reload refreshing. Monitoring of multiple folders. Some bugs fixed.
 
 1.2.2: add .erb to the list of monitored extensions (this is a gem-only update, run `gem update livereload` to install).
@@ -61,7 +63,7 @@ Installing in Safari
 
 3. If you haven't already, [you need to enable Safari extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
 
-4. Download [LiveReload 1.3 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.3.safariextz). Double-click it and confirm installation:
+4. Download [LiveReload 1.4 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.4.safariextz). Double-click it and confirm installation:
 
 ![](http://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
 

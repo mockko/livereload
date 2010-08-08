@@ -2,7 +2,7 @@
 var activeTab = null;
 var ws = null;
 var disconnectionReason = 'unexpected';
-var api_version = "1.3";
+var api_version = "1.4";
 var versionInfoReceived = false;
 
 function establishConnection() {
