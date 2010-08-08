@@ -50,7 +50,7 @@ Installing in Safari
 
 1. You need Ruby installed. Mac OS X users already have it, Windows users get it from [ruby-lang.org](http://www.ruby-lang.org/en/downloads/).
 
-2. Install the command-line tool. On OS X:
+2. Install the command-line tool. On OS X, you need Xcode tools installed (to compile eventmachine gem), then:
 
         sudo gem update --system
         sudo gem install livereload
@@ -78,7 +78,7 @@ Installing in Chrome
 
 1. You need Ruby installed. Mac OS X users already have it, Windows users get it from [ruby-lang.org](http://www.ruby-lang.org/en/downloads/).
 
-2. Install the command-line tool. On OS X and Linux:
+2. Install the command-line tool. On OS X, you need Xcode tools installed (to compile eventmachine gem), then:
 
         sudo gem update --system
         sudo gem install livereload
