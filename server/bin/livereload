@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 require 'rubygems'
-require 'livereload'
+require File.join(File.dirname(__FILE__), '..', 'lib', 'livereload')
 require 'optparse'
 
 def parse_command_line_config(args)
