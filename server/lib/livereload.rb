@@ -47,7 +47,7 @@ module LiveReload
 
   # note that host and port options do not make sense in per-project config files
   class Config
-    attr_accessor :host, :port, :exts, :exclusions, :debug, :apply_js_live, :apply_css_live, :grace_period
+    attr_accessor :host, :port, :exts, :exts_overwrite, :exclusions, :debug, :apply_js_live, :apply_css_live, :grace_period
 
     def initialize &block
       @host           = nil
@@ -63,7 +63,12 @@ module LiveReload
     end
 
     def update!
+      @exts = [nil] + @exts  # nil is used as a marker to detect if the array has been overwritten
+
       yield self
+
+      @exts_overwrite = @exts.empty? || ! @exts.first.nil?
+      @exts = @exts.compact
 
       # remove leading dots
       @exts = @exts.collect { |e| e.sub(/^\./, '') }
@@ -72,7 +77,11 @@ module LiveReload
     def merge! other
       @host           = other.host             if other.host
       @port           = other.port             if other.port
-      @exts          += other.exts
+      if other.exts_overwrite
+        @exts         = other.exts
+      else
+        @exts        += other.exts.compact
+      end
       @exclusions     = other.exclusions + @exclusions
       @debug          = other.debug            if other.debug != nil
       @apply_js_live  = other.apply_js_live    if other.apply_js_live != nil
