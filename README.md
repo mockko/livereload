@@ -157,6 +157,9 @@ Syntax is like this:
     # reload the whole page when .css changes
     config.apply_css_live = false
 
+    # wait 50ms for more changes before reloading a page
+    #config.grace_period = 0.05
+
 Configuration changes are applied live (it is called *Live* Reload after all, that has to mean something).
 
 A global config file (`~/.livereload`) is also supported if you happen to need one. It is merged with per-folder configurations.

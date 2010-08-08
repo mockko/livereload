@@ -40,11 +40,14 @@ module LiveReload
   #config.apply_js_live = false
   # reload the whole page when .css changes
   #config.apply_css_live = false
+
+  # wait 100ms for more changes before reloading a page
+  #config.grace_period = 0.1
   END
 
   # note that host and port options do not make sense in per-project config files
   class Config
-    attr_accessor :host, :port, :exts, :exclusions, :debug, :apply_js_live, :apply_css_live
+    attr_accessor :host, :port, :exts, :exclusions, :debug, :apply_js_live, :apply_css_live, :grace_period
 
     def initialize &block
       @host           = nil
@@ -54,6 +57,7 @@ module LiveReload
       @exclusions     = []
       @apply_js_live  = nil
       @apply_css_live = nil
+      @grace_period   = nil
 
       update!(&block) if block
     end
@@ -73,6 +77,7 @@ module LiveReload
       @debug          = other.debug            if other.debug != nil
       @apply_js_live  = other.apply_js_live    if other.apply_js_live != nil
       @apply_css_live = other.apply_css_live   if other.apply_css_live != nil
+      @grace_period   = other.grace_period     if other.grace_period != nil
 
       self
     end
@@ -105,6 +110,7 @@ module LiveReload
     config.exclusions = %w!*/.git/* */.svn/* */.hg/*!
     config.apply_js_live  = true
     config.apply_css_live = true
+    config.grace_period = 0.05
   end
 
   USER_CONFIG_FILE = File.expand_path("~/.livereload")
@@ -143,6 +149,9 @@ module LiveReload
       if @config.exclusions.size > 0
         puts "  - excluding changes in: " + @config.exclusions.join(" ")
       end
+      if @config.grace_period > 0
+        puts "  - with a grace period of #{sprintf('%0.2f', @config.grace_period)} sec after each change"
+      end
     end
 
     def when_changes_detected &block
@@ -153,12 +162,17 @@ module LiveReload
       if @dw
         @dw.stop
       end
-      @dw = EMDirWatcher.watch @directory, ['/.livereload'] + @config.exts.collect { |ext| "*.#{ext}"}, @config.exclusions do |path|
+      @dw = EMDirWatcher.watch @directory,
+            :include_only => (['/.livereload'] + @config.exts.collect { |ext| ["*.#{ext}", ".*.#{ext}"]}).flatten,
+            :exclude => @config.exclusions,
+            :grace_period => @config.grace_period do |paths|
         begin
-          if File.basename(path) == '.livereload'
-            @when_changes_detected.call [:config_changed, path]
-          else
-            @when_changes_detected.call [:modified, path]
+          paths.each do |path|
+            if File.basename(path) == '.livereload'
+              @when_changes_detected.call [:config_changed, path]
+            else
+              @when_changes_detected.call [:modified, path]
+            end
           end
         rescue
           puts $!
