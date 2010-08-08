@@ -73,6 +73,7 @@ function closeConnection() {
 function deactivated() {
     ws = null;
     activeTab = null;
+    versionInfoReceived = false;
 }
 
 safari.application.addEventListener("command", function(event) {

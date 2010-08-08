@@ -88,6 +88,7 @@ function deactivated() {
     activeTabId = null;
     chrome.browserAction.setTitle({ title: "Enable LiveReload" });
     chrome.browserAction.setIcon({ path: 'icon19.png' });
+    versionInfoReceived = false;
 }
 
 chrome.browserAction.onClicked.addListener(function(tab) {
