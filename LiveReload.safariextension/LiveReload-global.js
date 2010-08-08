@@ -30,8 +30,8 @@ function establishConnection() {
                 disconnectionReason = 'version-mismatch';
                 ws.close();
                 deactivated();
-                return;
             }
+            return;
         } else if (!versionInfoReceived) {
             alert("You are using an old incompatible version of the command-line tool.\n\n" +
                 "Please run the following command to update your command-line tool:\n" +
