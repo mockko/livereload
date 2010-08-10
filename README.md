@@ -92,7 +92,7 @@ Installing in Chrome
 
         gem update --system
         gem install eventmachine --platform=win32
-        gem install win32-changenotify livereload
+        gem install win32-changenotify win32-event livereload
 
 3. Visit the [LiveReload page](https://chrome.google.com/extensions/detail/jnihajbhpnppcggbcgedagnkighmdlei) on Chrome Extension Gallery and click Install. Confirm the installation:
 
