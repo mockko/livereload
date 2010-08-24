@@ -76,17 +76,25 @@ function closeConnection() {
     deactivated();
 }
 
-function activated() {
+function iconActivated() {
     chrome.browserAction.setTitle({ title: "Disable LiveReload" });
     chrome.browserAction.setIcon({ path: 'icon19-on.png' });
+}
+
+function iconDeactivated() {
+    chrome.browserAction.setTitle({ title: "Enable LiveReload" });
+    chrome.browserAction.setIcon({ path: 'icon19.png' });
+}
+
+function activated() {
+    iconActivated();
 }
 
 function deactivated() {
     ws = null;
     activeTabId = null;
-    chrome.browserAction.setTitle({ title: "Enable LiveReload" });
-    chrome.browserAction.setIcon({ path: 'icon19.png' });
     versionInfoReceived = false;
+    iconDeactivated();
 }
 
 chrome.browserAction.onClicked.addListener(function(tab) {
@@ -106,5 +114,13 @@ chrome.browserAction.onClicked.addListener(function(tab) {
         if (wasActive)
             sendTabUrl();
         activated();
+    }
+}, false);
+
+chrome.tabs.onSelectionChanged.addListener(function(tabId, selectInfo) {
+    if (activeTabId == tabId) {
+        iconActivated();
+    } else {
+        iconDeactivated();
     }
 }, false);
