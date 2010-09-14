@@ -4,7 +4,7 @@
   "background_page": "background.html",
   "content_scripts": [
     {
-      "matches": ["http://*/*"],
+      "matches": ["http://*/*", "file://*/*"],
       "js": ["LiveReload-content.js"]
     }
   ],
