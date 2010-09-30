@@ -42,12 +42,13 @@ function reloadScript(element) {
     element.parentNode.replaceChild(clone, element);
 }
 
-function reloadStylesheet(element) {
-    console.log("Reloading stylesheet: " + element.href);
+function reloadStylesheet(stylesheet) {
+    console.log("Reloading stylesheet: " + stylesheet.href);
+    var element = stylesheet.ownerNode;
     var clone = element.cloneNode(false);
     clone.href = this.generateNextUrl(element.href);
     insertAfter(clone, element);
-    element.reloadingViaLiveReload = 1;
+    stylesheet.reloadingViaLiveReload = 1;
     setTimeout(function() {
         if (element.parentNode)
             element.parentNode.removeChild(element);
@@ -56,7 +57,7 @@ function reloadStylesheet(element) {
 
 function performLiveReload(data) {
     var parsed = JSON.parse(data);
-    var scripts, script, links, link, name, found = false;
+    var scripts, script, stylesheets, stylesheet, name, found = false;
 
     if (parsed[0] != "refresh") {
         console.error("Unknown command: " + parsed[0]);
@@ -69,7 +70,7 @@ function performLiveReload(data) {
     var applyCSSLive = (options.apply_css_live !== undefined ? !!options.apply_css_live : true);
 
     if (applyJSLive && !found) {
-        scripts = document.getElementsByTagName("script");
+        scripts = document.scripts;
         for (var i = 0; i < scripts.length; i++) {
             script = scripts[i];
             if (script.src) {
@@ -84,14 +85,14 @@ function performLiveReload(data) {
     }
 
     if (applyCSSLive && !found) {
-        links = document.getElementsByTagName("link");
-        for (var i = 0; i < links.length; i++) {
-            link = links[i];
-            if (link.href) {
-                name = baseName(link.href);
+        stylesheets = document.styleSheets;
+        for (var i = 0; i < stylesheets.length; i++) {
+            stylesheet = stylesheets[i];
+            if (stylesheet.href) {
+                name = baseName(stylesheet.href);
                 if (name == nameToReload) {
-                    if (!link.reloadingViaLiveReload) {
-                        reloadStylesheet(link);
+                    if (!stylesheet.reloadingViaLiveReload) {
+                        reloadStylesheet(stylesheet);
                         found = true;
                         break;
                     }
