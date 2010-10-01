@@ -118,7 +118,7 @@ module LiveReload
     config.port  = 35729
     config.exts  = %w/html css js png gif jpg php php5 py rb erb/
     config.exclusions = %w!*/.git/* */.svn/* */.hg/*!
-    config.apply_js_live  = true
+    config.apply_js_live  = false
     config.apply_css_live = true
     config.grace_period = 0.05
   end
