@@ -194,7 +194,7 @@ Limitations
 
 Note that you can only have one page monitored, so if you enable LiveReload on another page, the first one will stop reloading.
 
-LiveReload does not work with local files in Chrome (since accessing file:// URLs from an extension requires an approval from the Google Chrome team) and in Safari (since we haven't bothered fixing it yet).
+LiveReload does not work with local files in Safari (since we haven't bothered fixing it yet).
 
 
 License
