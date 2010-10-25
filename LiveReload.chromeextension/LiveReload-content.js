@@ -84,8 +84,9 @@ function performLiveReload(data) {
         }
     }
 
-    if (applyCSSLive && !found) {
+    if (applyCSSLive && !found && /\.css$/i.test(nameToReload)) {
         stylesheets = document.styleSheets;
+        var length = stylesheets.length;
         for (var i = 0; i < stylesheets.length; i++) {
             stylesheet = stylesheets[i];
             if (stylesheet.href) {
@@ -99,10 +100,22 @@ function performLiveReload(data) {
                 }
             }
         }
+
+        if (!found) {
+            console.group("LiveReload: reloading all stylesheets because \"" + nameToReload + "\" does not correspond to any stylesheet");
+            for (var i = 0; i < length; i++) {
+                stylesheet = stylesheets[i];
+                if (stylesheet.href) {
+                    reloadStylesheet(stylesheet);
+                }
+            }
+            console.groupEnd();
+            found = true;
+        }
     }
 
     if (!found) {
-        console.log("LiveReload: reloading the full page because \"" + nameToReload + "\" does not correspond to any SCRIPT or LINK.")
+        console.log("LiveReload: reloading the full page because \"" + nameToReload + "\" does not correspond to any script or stylesheet.")
         window.location.reload();
     }
 }
