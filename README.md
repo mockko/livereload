@@ -52,13 +52,13 @@ Installing in Safari
 
 2. Install the command-line tool. On OS X, you need Xcode tools installed (to compile eventmachine gem), then:
 
-        sudo gem update --system
-        sudo gem install livereload
+        gem update --system
+        gem install livereload
 
     on Linux:
 
-        sudo gem update --system
-        sudo gem install rb-inotify livereload
+        gem update --system
+        gem install rb-inotify livereload
 
     on Windows:
 
@@ -87,13 +87,13 @@ Installing in Chrome
 
 2. Install the command-line tool. On OS X, you need Xcode tools installed (to compile eventmachine gem), then:
 
-        sudo gem update --system
-        sudo gem install livereload
+        gem update --system
+        gem install livereload
 
     on Linux:
 
-        sudo gem update --system
-        sudo gem install rb-inotify livereload
+        gem update --system
+        gem install rb-inotify livereload
 
     on Windows:
 
