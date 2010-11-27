@@ -6,7 +6,7 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 1. Applies CSS and JavaScript file changes without reloading a page.
 2. Automatically reloads a page when any other file changes (html, image, server-side script, etc).
 
-![](http://github.com/mockko/livereload/raw/master/artwork/screenshot.png)
+![](https://github.com/mockko/livereload/raw/master/artwork/screenshot.png)
 
 **Please help spread the word — tweet or blog about LiveReload!**
 
@@ -77,7 +77,7 @@ Installing in Safari
 
 4. Download [LiveReload 1.4 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.4.safariextz). Double-click it and confirm installation:
 
-![](http://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
+![](https://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
 
 
 Installing in Chrome
@@ -110,11 +110,11 @@ Installing in Chrome
 
 3. Visit the [LiveReload page](https://chrome.google.com/extensions/detail/jnihajbhpnppcggbcgedagnkighmdlei) on Chrome Extension Gallery and click Install. Confirm the installation:
 
-![](http://github.com/mockko/livereload/raw/master/docs/images/chrome-install-prompt.png)
+![](https://github.com/mockko/livereload/raw/master/docs/images/chrome-install-prompt.png)
 
 Done. Now you have an additional button on your toolbar:
 
-![](http://github.com/mockko/livereload/raw/master/docs/images/chrome-button.png)
+![](https://github.com/mockko/livereload/raw/master/docs/images/chrome-button.png)
 
 
 Usage
@@ -126,11 +126,11 @@ Run the server in the directory you want to watch:
     
 You should see something like this:
 
-![](http://github.com/mockko/livereload/raw/master/docs/images/livereload-server-running.png)
+![](https://github.com/mockko/livereload/raw/master/docs/images/livereload-server-running.png)
 
 Now, if you are using Safari, right-click the page you want to be livereload'ed and choose “Enable LiveReload”:
 
-![](http://github.com/mockko/livereload/raw/master/docs/images/safari-context-menu.png)
+![](https://github.com/mockko/livereload/raw/master/docs/images/safari-context-menu.png)
 
 If you are using Chrome, just click the toolbar button (it will turn green to indicate that LiveReload is active).
 
