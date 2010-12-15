@@ -52,25 +52,21 @@ Installing in Safari
 
 2. Install the command-line tool. On OS X, you need Xcode tools installed (to compile eventmachine gem), then:
 
-        sudo gem update --system
         sudo gem install livereload
 
     on Linux:
 
-        sudo gem update --system
         sudo gem install rb-inotify livereload
 
     on Windows:
 
     For Ruby 1.8:
 
-        gem update --system
         gem install eventmachine --platform=win32
         gem install win32-changenotify win32-event livereload
 
     For Ruby 1.9 (you'll need Ruby DevKit installed):
 
-        gem update --system
         gem install eventmachine win32-changenotify win32-event livereload --platform=ruby
 
 3. If you haven't already, [you need to enable Safari extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
@@ -87,25 +83,21 @@ Installing in Chrome
 
 2. Install the command-line tool. On OS X, you need Xcode tools installed (to compile eventmachine gem), then:
 
-        sudo gem update --system
         sudo gem install livereload
 
     on Linux:
 
-        sudo gem update --system
         sudo gem install rb-inotify livereload
 
     on Windows:
 
     For Ruby 1.8:
 
-        gem update --system
         gem install eventmachine --platform=win32
         gem install win32-changenotify win32-event livereload
 
     For Ruby 1.9 (you'll need Ruby DevKit installed):
 
-        gem update --system
         gem install eventmachine win32-changenotify win32-event livereload --platform=ruby
 
 3. Visit the [LiveReload page](https://chrome.google.com/extensions/detail/jnihajbhpnppcggbcgedagnkighmdlei) on Chrome Extension Gallery and click Install. Confirm the installation:
