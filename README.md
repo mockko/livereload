@@ -28,6 +28,8 @@ Want to know about latest developments and smart tricks? Follow [@livereload](ht
 
 Feel like chatting? Join us at livereload@jaconda.im — just add this contact to your Jabber / Google Talk. (Please don't overuse this chat feature, we're trying to get some work done too!)
 
+1.5 [not yet released]: Support for `file://` URLs in Chrome (does not seem possible in Safari, sorry). JS live reloading is now off by default. Minor UI improvements.
+
 1.4: Works on Windows. Sane file system monitoring (had to write it from scratch, see em-dir-watcher gem). Port number changed to 35729 because of a conflict with Zend Server. Added grace period to combine the changes made in rapid succession. Works with Vim.
 
 **Please help spread the word — tweet or blog about LiveReload!**

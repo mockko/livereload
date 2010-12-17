@@ -2,7 +2,7 @@
 var activeTab = null;
 var ws = null;
 var disconnectionReason = 'unexpected';
-var api_version = "1.4";
+var api_version = "1.5";
 var versionInfoReceived = false;
 
 function establishConnection() {
@@ -45,7 +45,7 @@ function establishConnection() {
     };
     ws.onclose = function() {
         if (disconnectionReason == 'cannot-connect') {
-            alert("Cannot connect to LiveReload server. Please update livereload gem to 1.4 (if you haven't already) and run livereload command from the directory you want to watch.");
+            alert("Cannot connect to LiveReload server. Please update livereload gem to 1.5 (if you haven't already) and run livereload command from the directory you want to watch.");
         }
         deactivated();
     };

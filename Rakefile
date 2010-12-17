@@ -1,5 +1,5 @@
 
-LIVERELOAD_VERSION = '1.4'
+LIVERELOAD_VERSION = '1.5'
 GEM_SRC = FileList["server/lib/*.rb", "server/*.gemspec", "server/bin/*"]
 GEM_DIST = "server/livereload-#{LIVERELOAD_VERSION}.gem"
 
