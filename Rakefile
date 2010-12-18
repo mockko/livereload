@@ -3,6 +3,22 @@ LIVERELOAD_VERSION = '1.5'
 GEM_SRC = FileList["server/lib/*.rb", "server/*.gemspec", "server/bin/*"]
 GEM_DIST = "server/livereload-#{LIVERELOAD_VERSION}.gem"
 
+task :chrome do
+  path = 'LiveReload.chromeextension/LiveReload-content.js'
+  File.open path, 'w' do |f|
+    f.puts File.read('src/core.js') << File.read('src/chrome.js')
+  end
+  puts "+ #{path}"
+end
+
+task :safari do
+  path = 'LiveReload.safariextension/LiveReload-injected.js'
+  File.open path, 'w' do |f|
+    f.puts File.read('src/core.js') << File.read('src/safari.js')
+  end
+  puts "+ #{path}"
+end
+
 namespace :gem do
    file GEM_DIST => GEM_SRC do
       cd 'server' do
