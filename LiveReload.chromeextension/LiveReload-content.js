@@ -26,7 +26,7 @@ var generateNextUrl = function(url) {
     url = url+"";
     var re = /(\?|&)livereload=(\d+)-(\d+)-(\d+)/;
     var m = url.match(re);
-    if (!m) { 
+    if (!m) {
         return url + genSuffix(url.indexOf('?') == -1 ? '?' : ':', 0)
     } else {
         return url.replace(re, function(match, separator, prevIndex, d, r) {
@@ -42,21 +42,56 @@ function reloadScript(element) {
     element.parentNode.replaceChild(clone, element);
 }
 
-function reloadStylesheet(element) {
+function reloadStylesheet(stylesheet) {
+    var element = stylesheet.ownerNode;
     console.log("Reloading stylesheet: " + element.href);
     var clone = element.cloneNode(false);
     clone.href = this.generateNextUrl(element.href);
     insertAfter(clone, element);
-    element.reloadingViaLiveReload = 1;
+    stylesheet.reloadingViaLiveReload = 1;
     setTimeout(function() {
         if (element.parentNode)
             element.parentNode.removeChild(element);
     }, 1000);
 }
 
+function reloadImportedStylesheet(stylesheet, nameToReload) {
+
+    var rules = stylesheet.cssRules;
+    if (!rules) {
+        console.warn("Can't access stylesheet: " + stylesheet.href);
+        return false;
+    }
+
+    var found = false;
+    for (var i=0; i<rules.length; i++) {
+        var rule = rules[i];
+        switch (rule.type) {
+            case CSSRule.CHARSET_RULE:
+                // Only charset rules can precede import rules
+                continue;
+            case CSSRule.IMPORT_RULE:
+                var href = rule.href;
+                if (!nameToReload || baseName(href) === nameToReload) {
+                    console.log("Reloading imported stylesheet: " + href);
+                    var media = rule.media.length ? [].join.call(rule.media, ', ') : '';
+                    stylesheet.insertRule('@import url("' + generateNextUrl(href) + '") ' + media + ';', i);
+                    stylesheet.deleteRule(i + 1);
+                    found = true;
+                } else {
+                    found = reloadImportedStylesheet(rule.styleSheet, nameToReload) || found;
+                }
+                break;
+            default:
+                return found;
+        }
+    }
+    return found;
+}
+
 function performLiveReload(data) {
     var parsed = JSON.parse(data);
-    var scripts, script, links, link, name, found = false;
+    var scripts, script, stylesheets, stylesheet, name, found = false;
 
     if (parsed[0] != "refresh") {
         console.error("Unknown command: " + parsed[0]);
@@ -69,7 +104,7 @@ function performLiveReload(data) {
     var applyCSSLive = (options.apply_css_live !== undefined ? !!options.apply_css_live : true);
 
     if (applyJSLive && !found) {
-        scripts = document.getElementsByTagName("script");
+        scripts = document.scripts;
         for (var i = 0; i < scripts.length; i++) {
             script = scripts[i];
             if (script.src) {
@@ -83,31 +118,42 @@ function performLiveReload(data) {
         }
     }
 
-    if (applyCSSLive && !found) {
-        links = document.getElementsByTagName("link");
-        for (var i = 0; i < links.length; i++) {
-            link = links[i];
-            if (link.href) {
-                name = baseName(link.href);
-                if (name == nameToReload) {
-                    if (!link.reloadingViaLiveReload) {
-                        reloadStylesheet(link);
-                        found = true;
-                        break;
-                    }
+    if (applyCSSLive && !found && /\.css$/i.test(nameToReload)) {
+        stylesheets = document.styleSheets;
+        for (var i = 0; i < stylesheets.length; i++) {
+            stylesheet = stylesheets[i];
+            if (stylesheet.href && baseName(stylesheet.href) == nameToReload) {
+                if (!stylesheet.reloadingViaLiveReload) {
+                    reloadStylesheet(stylesheet);
+                    found = true;
+                    break;
+                } else {
+                    console.warn("Stylesheet already has been reloaded:", stylesheet.href);
+                }
+            } else {
+                found = reloadImportedStylesheet(stylesheet, nameToReload) || found;
+            }
+        }
+
+        if (!found) {
+            console.log('LiveReload: "' + nameToReload + '" does not correspond to any stylesheet. Reloading all stylesheets.');
+            for (var i = 0; i < stylesheets.length; i++) {
+                stylesheet = stylesheets[i];
+                if (stylesheet.href) {
+                    reloadStylesheet(stylesheet);
+                } else {
+                    reloadImportedStylesheet(stylesheet);
                 }
             }
+            found = true;
         }
     }
 
     if (!found) {
-        console.log("LiveReload: reloading the full page because \"" + nameToReload + "\" does not correspond to any SCRIPT or LINK.")
+        console.log("LiveReload: reloading the full page because \"" + nameToReload + "\" does not correspond to any script or stylesheet.");
         window.location.reload();
     }
 }
-
-// Chrome
-
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     console.log("LiveReload: " + request);
     performLiveReload(request)
