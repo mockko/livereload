@@ -16,24 +16,49 @@ var insertAfter = function(newElement, targetElement) {
     }
 };
 
-var generateNextUrl = function(url) {
-    var genSuffix = function(separator, prevIndex) {
-        var date = Date.now() + "";
-        var rand = (1+(Math.random()*0x10000)|0);
-        return separator + "livereload=" + (parseInt(prevIndex, 10) + 1)
-            + '-' + date + '-' + rand;
+/**
+ * @nosideeffects
+ * @return {string}
+ */
+function generateExpando() {
+    return 'livereload=' + Date.now();
+}
+
+/**
+ * @param {string} url
+ * @param {string} [expando]
+ * @nosideeffects
+ * @return {string}
+ */
+function generateNextUrl(url, expando) {
+    expando = expando || generateExpando();
+
+    var hashIndex = url.indexOf('#');
+    var hash = '';
+    if (hashIndex != -1) {
+        hash = url.slice(hashIndex);
+        url = url.slice(0, hashIndex);
     }
-    url = url+"";
-    var re = /(\?|&)livereload=(\d+)-(\d+)-(\d+)/;
-    var m = url.match(re);
-    if (!m) {
-        return url + genSuffix(url.indexOf('?') == -1 ? '?' : ':', 0)
+
+    var paramsIndex = url.indexOf('?');
+    var params = '';
+    if (paramsIndex != -1) {
+        params = url.slice(paramsIndex);
+        var re = /(\?|&)livereload=(\d+)/;
+        if (re.test(params)) {
+            params = params.replace(re, function(match, separator){
+                return separator + expando;
+            });
+        } else {
+            params += '&' + expando;
+        }
+        url = url.slice(0, paramsIndex);
     } else {
-        return url.replace(re, function(match, separator, prevIndex, d, r) {
-            return genSuffix(separator, prevIndex);
-        });
+        params += '?' + expando;
     }
-};
+
+    return url + params + hash;
+}
 
 function reloadScript(element) {
     console.log("Reloading script: " + element.src);
