@@ -15,3 +15,15 @@ test("generateNextUrl", function(){
     ok(/http[:][/][/]example[.]com[/]style[.]css[?]livereload=\d+/.test(url));
 
 });
+
+test("reloadStylesheetImages", function(){
+    var link = appendStyleSheet('fixtures/images.css');
+    var lastStylesheet = document.styleSheets[document.styleSheets.length - 1];
+    if (lastStylesheet.cssRules) {
+        var result = reloadStylesheetImages(lastStylesheet, 'icon19-on.png', generateExpando());
+        equal(result.length, 2);
+        equal(result[0].style.backgroundImage, result[1].style.backgroundImage);
+    } else {
+        // Chrome can't run this test from file://
+    }
+});

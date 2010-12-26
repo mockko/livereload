@@ -119,6 +119,73 @@ function reloadImportedStylesheet(stylesheet, nameToReload) {
     return found;
 }
 
+
+/**
+ * Recursevly reload all background-image and border-image properties
+ * @param {CSSStyleSheet|CSSMediaRule} stylesheet
+ * @param {string} nameToReload
+ * @param {string} expando
+ * @return {Array} reloaded rules
+ */
+function reloadStylesheetImages(stylesheet, nameToReload, expando) {
+
+    var result = [];
+
+    var rules = stylesheet.cssRules;
+    if (!rules) {
+        console.warn("Can't access stylesheet: " + stylesheet.href);
+        return false;
+    }
+
+    for (var i=0; i<rules.length; i++) {
+        var rule = rules[i];
+        switch (rule.type) {
+            case CSSRule.IMPORT_RULE:
+                if (rule.href) {
+                    result.push.apply(result, reloadStylesheetImages(rule.styleSheet, nameToReload, expando));
+                }
+                break;
+            case CSSRule.STYLE_RULE:
+                var found = false;
+                if (rule.style.backgroundImage) {
+                    var backgroundImage = extractURL(rule.style.backgroundImage);
+                    if (baseName(backgroundImage) == nameToReload) {
+                        rule.style.backgroundImage = 'url(' + generateNextUrl(backgroundImage, expando) + ')';
+                        found = true;
+                    }
+                }
+                if (rule.style.borderImage) {
+                    var borderImage = extractURL(rule.style.borderImage);
+                    if (baseName(borderImage) == nameToReload) {
+                        rule.style.borderImage = 'url(' + generateNextUrl(borderImage, expando) + ')';
+                        found = true;
+                    }
+                }
+                if (found) {
+                    result.push(rule);
+                }
+                break;
+            case CSSRule.MEDIA_RULE:
+                result.push.apply(result, reloadStylesheetImages(rule, nameToReload, expando));
+                break;
+        }
+    }
+
+    return result;
+}
+
+/**
+ *   extractURL('url(ferrets.jpg)')
+ *   -> 'ferrets.jpg'
+ *
+ * @param {string} url
+ * @nosideeffects
+ * @return {string}
+ */
+function extractURL(url) {
+    return url.slice(4).slice(0, -1);
+}
+
 function performLiveReload(data) {
     var parsed = JSON.parse(data);
     var name, found;
@@ -132,6 +199,7 @@ function performLiveReload(data) {
     var nameToReload = baseName(options.path);
     var applyJSLive = (options.apply_js_live !== undefined ? !!options.apply_js_live : true);
     var applyCSSLive = (options.apply_css_live !== undefined ? !!options.apply_css_live : true);
+    var applyImagesLive = (options.apply_images_live === undefined ? true : !!options.apply_css_live);
 
     if (applyJSLive && !found) {
         var scripts = document.scripts;
@@ -177,6 +245,47 @@ function performLiveReload(data) {
             }
             found = true;
         }
+    }
+
+    if (applyImagesLive && !found && /[.](jpe?g|png|gif)/.test(nameToReload)) {
+        var expando = generateExpando();
+        var imgs = document.images;
+        for (var i = 0; i < imgs.length; i++) {
+            var img = imgs[i];
+            if (baseName(img.src) == nameToReload) {
+                img.src = generateNextUrl(img.src, expando);
+            }
+        }
+        var src;
+        imgs = document.querySelectorAll('[style*=background]');
+        for (var i = 0; i < imgs.length; i++) {
+            var img = imgs[i];
+            if (!img.style.backgroundImage) {
+                continue;
+            }
+            src = extractURL(img.style.backgroundImage);
+            if (src && baseName(src) == nameToReload) {
+                img.style.backgroundImage = 'url(' + generateNextUrl(src, expando) + ')';
+            }
+        }
+
+        imgs = document.querySelectorAll('[style*=border]');
+        for (var i = 0; i < imgs.length; i++) {
+            var img = imgs[i];
+            if (!img.style.borderImage) {
+                continue;
+            }
+            src = extractURL(img.style.borderImage);
+            if (src && baseName(src) == nameToReload) {
+                img.style.borderImage = 'url(' + generateNextUrl(src, expando) + ')';
+            }
+        }
+
+        for (var i = 0; i < stylesheets.length; i++) {
+            reloadStylesheetImages(stylesheets[i], nameToReload, expando);
+        }
+
+        found = true;
     }
 
     if (!found) {
