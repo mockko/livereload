@@ -41,6 +41,8 @@ module LiveReload
   #config.apply_js_live = false
   # reload the whole page when .css changes
   #config.apply_css_live = false
+  # reload the whole page when images (png, jpg, gif) change
+  #config.apply_images_live = false
 
   # wait 100ms for more changes before reloading a page
   #config.grace_period = 0.1
@@ -48,7 +50,7 @@ module LiveReload
 
   # note that host and port options do not make sense in per-project config files
   class Config
-    attr_accessor :host, :port, :exts, :exts_overwrite, :exclusions, :debug, :apply_js_live, :apply_css_live, :grace_period
+    attr_accessor :host, :port, :exts, :exts_overwrite, :exclusions, :debug, :apply_js_live, :apply_css_live, :apply_images_live, :grace_period
 
     def initialize &block
       @host           = nil
@@ -58,6 +60,7 @@ module LiveReload
       @exclusions     = []
       @apply_js_live  = nil
       @apply_css_live = nil
+      @apply_images_live = nil
       @grace_period   = nil
 
       update!(&block) if block
@@ -87,6 +90,7 @@ module LiveReload
       @debug          = other.debug            if other.debug != nil
       @apply_js_live  = other.apply_js_live    if other.apply_js_live != nil
       @apply_css_live = other.apply_css_live   if other.apply_css_live != nil
+      @apply_images_live = other.apply_images_live if other.apply_images_live != nil
       @grace_period   = other.grace_period     if other.grace_period != nil
 
       self
@@ -120,6 +124,7 @@ module LiveReload
     config.exclusions = %w!*/.git/* */.svn/* */.hg/*!
     config.apply_js_live  = false
     config.apply_css_live = true
+    config.apply_images_live = true
     config.grace_period = 0.05
   end
 
@@ -231,7 +236,8 @@ module LiveReload
             puts "Modified: #{File.basename(modified_file)}"
             data = ['refresh', { :path => modified_file,
                 :apply_js_live  => project.config.apply_js_live,
-                :apply_css_live => project.config.apply_css_live }].to_json
+                :apply_css_live => project.config.apply_css_live,
+                :apply_images_live => project.config.apply_images_live }].to_json
             puts data if global_config.debug
             web_sockets.each do |ws|
               ws.send data
