@@ -1,4 +1,3 @@
-
 function baseName(s) {
     return s
         .replace(/\?.*$/, '')  // strip query string if any
@@ -63,7 +62,7 @@ function generateNextUrl(url, expando) {
 function reloadScript(element) {
     console.log("Reloading script: " + element.src);
     var clone = element.cloneNode(false);
-    clone.src = this.generateNextUrl(element.src);
+    clone.src = generateNextUrl(element.src);
     element.parentNode.replaceChild(clone, element);
 }
 
@@ -71,7 +70,7 @@ function reloadStylesheet(stylesheet) {
     var element = stylesheet.ownerNode;
     console.log("Reloading stylesheet: " + element.href);
     var clone = element.cloneNode(false);
-    clone.href = this.generateNextUrl(element.href);
+    clone.href = generateNextUrl(element.href);
     insertAfter(clone, element);
     stylesheet.reloadingViaLiveReload = 1;
     setTimeout(function() {
@@ -80,6 +79,12 @@ function reloadStylesheet(stylesheet) {
     }, 1000);
 }
 
+/**
+ * Recursevly reload all stylesheets that match nameToReload
+ * @param {CSSStyleSheet} stylesheet
+ * @param {string} nameToReload
+ * @return {boolean} found or not
+ */
 function reloadImportedStylesheet(stylesheet, nameToReload) {
 
     var rules = stylesheet.cssRules;
@@ -89,7 +94,7 @@ function reloadImportedStylesheet(stylesheet, nameToReload) {
     }
 
     var found = false;
-    for (var i=0; i<rules.length; i++) {
+    for (var i=0; i < rules.length; i++) {
         var rule = rules[i];
         switch (rule.type) {
             case CSSRule.CHARSET_RULE:
@@ -116,7 +121,7 @@ function reloadImportedStylesheet(stylesheet, nameToReload) {
 
 function performLiveReload(data) {
     var parsed = JSON.parse(data);
-    var scripts, script, stylesheets, stylesheet, name, found = false;
+    var name, found;
 
     if (parsed[0] != "refresh") {
         console.error("Unknown command: " + parsed[0]);
@@ -129,9 +134,9 @@ function performLiveReload(data) {
     var applyCSSLive = (options.apply_css_live !== undefined ? !!options.apply_css_live : true);
 
     if (applyJSLive && !found) {
-        scripts = document.scripts;
+        var scripts = document.scripts;
         for (var i = 0; i < scripts.length; i++) {
-            script = scripts[i];
+            var script = scripts[i];
             if (script.src) {
                 name = baseName(script.src);
                 if (name == nameToReload) {
@@ -144,9 +149,9 @@ function performLiveReload(data) {
     }
 
     if (applyCSSLive && !found && /\.css$/i.test(nameToReload)) {
-        stylesheets = document.styleSheets;
+        var stylesheets = document.styleSheets;
         for (var i = 0; i < stylesheets.length; i++) {
-            stylesheet = stylesheets[i];
+            var stylesheet = stylesheets[i];
             if (stylesheet.href && baseName(stylesheet.href) == nameToReload) {
                 if (!stylesheet.reloadingViaLiveReload) {
                     reloadStylesheet(stylesheet);
@@ -175,7 +180,7 @@ function performLiveReload(data) {
     }
 
     if (!found) {
-        console.log("LiveReload: reloading the full page because \"" + nameToReload + "\" does not correspond to any script or stylesheet.");
+        console.log('LiveReload: reloading the full page because "' + nameToReload + '" does not correspond to any script or stylesheet.');
         window.location.reload();
     }
 }
