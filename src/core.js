@@ -73,10 +73,22 @@ function reloadStylesheet(stylesheet) {
     clone.href = generateNextUrl(element.href);
     insertAfter(clone, element);
     stylesheet.reloadingViaLiveReload = 1;
-    setTimeout(function() {
-        if (element.parentNode)
-            element.parentNode.removeChild(element);
-    }, 1000);
+
+    if ('sheet' in clone) {
+        var intervalId = setInterval(function(){
+            if (clone.sheet) {
+                removeOld();
+            }
+        }, 20);
+    }
+
+    var timeoutId = setTimeout(removeOld, 1000);
+
+    function removeOld() {
+        intervalId && clearInterval(intervalId);
+        timeoutId && clearTimeout(timeoutId);
+        element.parentNode && element.parentNode.removeChild(element);
+    }
 }
 
 /**
