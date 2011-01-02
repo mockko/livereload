@@ -1,38 +1,20 @@
-LiveReload: xrefresh for Safari & Chrome
-========================================
+# LiveReload
+
+![LR](https://github.com/mockko/livereload/raw/master/artwork/screenshot.png)
 
 LiveReload is a Safari/Chrome extension + a command-line tool that:
 
 1. Applies CSS and JavaScript file changes without reloading a page.
 2. Automatically reloads a page when any other file changes (html, image, server-side script, etc).
 
-![](https://github.com/mockko/livereload/raw/master/artwork/screenshot.png)
-
-**Please help spread the word — tweet or blog about LiveReload!**
-
-Watch an [awesome screencast by Gregg Pollack](http://blog.envylabs.com/2010/07/livereload-screencast/) at envylabs.com.
-
-**What do our users say?**
-
-“I think LiveReload is going to change the way I work...” [@mheerema](http://twitter.com/mheerema/status/18363670011)
-
-“spent a day using livereload. really impressed, very nice to watch pages update as I add / change code.” [@pollingj](http://twitter.com/pollingj/status/18366550224)
-
-“Gem of the month (quarter?): LiveReload” [@grimen](http://twitter.com/grimen/status/18369684099)
+**[Screencast](http://blog.envylabs.com/2010/07/livereload-screencast/)** by Gregg Pollack at envylabs.com.
 
 
-What's new?
------------
-
-Want to know about latest developments and smart tricks? Follow [@livereload](http://twitter.com/livereload) on Twitter!
-
-Feel like chatting? Join us at livereload@jaconda.im — just add this contact to your Jabber / Google Talk. (Please don't overuse this chat feature, we're trying to get some work done too!)
+## What's new?
 
 1.5: Support for `file://` URLs in Chrome (does not seem possible in Safari, sorry). JS live reloading is now off by default. Minor UI improvements.
 
 1.4: Works on Windows. Sane file system monitoring (had to write it from scratch, see em-dir-watcher gem). Port number changed to 35729 because of a conflict with Zend Server. Added grace period to combine the changes made in rapid succession. Works with Vim.
-
-**Please help spread the word — tweet or blog about LiveReload!**
 
 1.3: Configuration file (`.livereload`) — you can customize extensions, configure exclusions, disable no-reload refreshing. Monitoring of multiple folders. Some bugs fixed.
 
@@ -47,12 +29,16 @@ Feel like chatting? Join us at livereload@jaconda.im — just add this contact t
 1.0: original release -- Safari extension and a command-line tool in a Ruby gem.
 
 
-Installing in Safari
---------------------
+## Installation
+
+LiveReload consists of command-line monitoring tool (livereload ruby gem) and browser extensions (for Google Chrome and Safari).
+
+
+### Monitoring tool
 
 1. You need Ruby installed. Mac OS X users already have it, Windows users get it from [ruby-lang.org](http://www.ruby-lang.org/en/downloads/).
 
-2. Install the command-line tool. On OS X, you need Xcode tools installed (to compile eventmachine gem), then:
+2. On Mac OS X you need Xcode tools (to compile eventmachine gem) and [RubyCocoa](http://sourceforge.net/projects/rubycocoa/) installed, then:
 
         sudo gem install livereload
 
@@ -71,46 +57,26 @@ Installing in Safari
 
         gem install eventmachine win32-changenotify win32-event livereload --platform=ruby
 
-3. Download [LiveReload 1.5 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.5.safariextz). Double-click it and confirm installation:
-
-![](https://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
+Another option is to use [Guard](https://github.com/guard/guard) with [guard-livereload](https://github.com/guard/guard-livereload). It does not require RubyCocoa on Mac OS X.
 
 
-Installing in Chrome
---------------------
-
-1. You need Ruby installed. Mac OS X users already have it, Windows users get it from [ruby-lang.org](http://www.ruby-lang.org/en/downloads/).
-
-2. Install the command-line tool. On OS X, you need Xcode tools installed (to compile eventmachine gem), then:
-
-        sudo gem install livereload
-
-    on Linux:
-
-        sudo gem install rb-inotify livereload
-
-    on Windows:
-
-    For Ruby 1.8:
-
-        gem install eventmachine --platform=win32
-        gem install win32-changenotify win32-event livereload
-
-    For Ruby 1.9 (you'll need Ruby DevKit installed):
-
-        gem install eventmachine win32-changenotify win32-event livereload --platform=ruby
-
-3. Visit the [LiveReload page](https://chrome.google.com/extensions/detail/jnihajbhpnppcggbcgedagnkighmdlei) on Chrome Extension Gallery and click Install. Confirm the installation:
+### [Google Chrome extension](https://chrome.google.com/extensions/detail/jnihajbhpnppcggbcgedagnkighmdlei)
 
 ![](https://github.com/mockko/livereload/raw/master/docs/images/chrome-install-prompt.png)
 
-Done. Now you have an additional button on your toolbar:
+Click “Install”. Actually, LiveReload does not access your browser history. The warning is misleading.
 
 ![](https://github.com/mockko/livereload/raw/master/docs/images/chrome-button.png)
 
 
-Usage
------
+### Safari extension
+
+Download [LiveReload 1.5 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.5.safariextz). Double-click it and confirm installation:
+
+![](https://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
+
+
+## Usage
 
 Run the server in the directory you want to watch:
 
@@ -127,8 +93,7 @@ Now, if you are using Safari, right-click the page you want to be livereload'ed 
 If you are using Chrome, just click the toolbar button (it will turn green to indicate that LiveReload is active).
 
 
-Advanced Usage
---------------
+### Advanced Usage
 
 If you want to monitor several directories, pass them on the command line:
 
@@ -141,8 +106,7 @@ Run `livereload --help` for a list of command-line options (there's nothing inte
 Looking to also process CoffeeScript, SASS, LessCSS or HAML? Here's a [Rakefile that does that live too](http://gist.github.com/472349). (Please read the comments if you're using HAML for templates in a Rails app.)
 
 
-Configuration
--------------
+### Configuration
 
 To:
 
@@ -181,21 +145,32 @@ Configuration changes are applied live (it is called *Live* Reload after all, th
 A global config file (`~/.livereload`) is also supported if you happen to need one. It is merged with per-folder configurations.
 
 
-Limitations
------------
+## Limitations
 
 Note that you can only have one page monitored, so if you enable LiveReload on another page, the first one will stop reloading.
 
 LiveReload does not work with local files in Safari.
 
+## Spread the word
 
-License
--------
+[@livereload](http://twitter.com/livereload) on Twitter!
+
+###What do our users say?
+
+“I think LiveReload is going to change the way I work...” [@mheerema](http://twitter.com/mheerema/status/18363670011)
+
+“spent a day using livereload. really impressed, very nice to watch pages update as I add / change code.” [@pollingj](http://twitter.com/pollingj/status/18366550224)
+
+“Gem of the month (quarter?): LiveReload” [@grimen](http://twitter.com/grimen/status/18369684099)
+
+Feel like chatting? Join us at livereload@jaconda.im — just add this contact to your Jabber / Google Talk.
+
+
+## License
 
 This software is distributed under the MIT license.
 
 
-Thanks
-------
+## Thanks
 
 LiveReload has been greatly inspired by (and actually borrows a few lines of code from) [XRefresh](http://xrefresh.binaryage.com/), a similar tool for Firefox.
