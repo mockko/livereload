@@ -48,14 +48,7 @@ LiveReload consists of command-line monitoring tool (livereload ruby gem) and br
 
     on Windows:
 
-    For Ruby 1.8:
-
-        gem install eventmachine --platform=win32
-        gem install win32-changenotify win32-event livereload
-
-    For Ruby 1.9 (you'll need Ruby DevKit installed):
-
-        gem install eventmachine win32-changenotify win32-event livereload --platform=ruby
+        gem install eventmachine-win32 win32-changenotify win32-event livereload
 
 Another option is to use [Guard](https://github.com/guard/guard) with [guard-livereload](https://github.com/guard/guard-livereload). It does not require RubyCocoa on Mac OS X.
 
