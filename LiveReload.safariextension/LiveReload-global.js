@@ -1,16 +1,31 @@
 
-var activeTab = null;
+// LiveReload-enabled tabs
+var tabs = [];
+tabs.add = function(id){
+    var index = this.indexOf(id);
+    return index == -1 ? this.push(id) : index;
+};
+tabs.__defineGetter__('last', function(){
+    var length = this.length;
+    return length ? this[length - 1] : null;
+});
+
 var ws = null;
 var disconnectionReason = 'unexpected';
 var api_version = "1.5";
 var versionInfoReceived = false;
 
 function establishConnection() {
-    if (ws != null) return;
+    if (ws) {
+        throw 'WebSocket already opened.';
+    }
     ws = new WebSocket("ws://localhost:35729/websocket");
     disconnectionReason = 'cannot-connect';
     versionInfoReceived = false;
     ws.onmessage = function(evt) {
+        if (tabs.length == 0) {
+            throw 'No tabs';
+        }
         var m, data = evt.data;
         if (m = data.match(/!!ver:([\d.]+)/)) {
             versionInfoReceived = true;
@@ -41,7 +56,9 @@ function establishConnection() {
             deactivated();
             return;
         }
-        activeTab.page.dispatchMessage("LiveReload", data);
+        tabs.forEach(function(tab){
+            tab.page.dispatchMessage('LiveReload', data);
+        });
     };
     ws.onclose = function() {
         if (disconnectionReason == 'cannot-connect') {
@@ -51,17 +68,20 @@ function establishConnection() {
     };
     ws.onopen = function() {
         disconnectionReason = 'broken';
-        if (activeTab != null)
-            sendTabUrl();
+        sendTabUrl();
     };
 }
 
 function sendTabUrl() {
-    ws.send(activeTab.url);
+    var activeTab = tabs.last;
+    if (activeTab == null) {
+        throw 'No active tab';
+    }
+    ws && ws.send(activeTab.url);
 }
 
 function closeConnection() {
-    if (ws != null) {
+    if (ws) {
         disconnectionReason = 'manual';
         ws.close();
     }
@@ -70,39 +90,40 @@ function closeConnection() {
 
 function deactivated() {
     ws = null;
-    activeTab = null;
+    tabs.length = 0;
     versionInfoReceived = false;
 }
 
 safari.application.addEventListener("command", function(event) {
     if (event.command == 'enable') {
         var tab = safari.application.activeBrowserWindow.activeTab;
-        if (activeTab == tab) {
-            closeConnection();
-        } else {
-            var wasActive = (activeTab != null);
-            try {
-                establishConnection();
-            } catch(e) {
-                alert("Failed to establish connection: " + e.message);
-                deactivated();
-                return;
+        var index = tabs.indexOf(tab);
+        if (index > -1) {
+            tabs.splice(index, 1);
+            //TODO: log on the server about disconected pages
+            if (tabs.length == 0) {
+                closeConnection();
             }
-            activeTab = tab;
-            if (wasActive)
+        } else {
+            tabs.add(tab);
+            if (ws && ws.readyState == 1) {
                 sendTabUrl();
+            } else {
+                try {
+                    establishConnection();
+                } catch(e) {
+                    alert('Failed to establish connection: ' + e.message);
+                    deactivated();
+                    return;
+                }
+            }
         }
     }
 }, false);
 
 safari.application.addEventListener("validate", function(event) {
-    var title;
     var tab = safari.application.activeBrowserWindow.activeTab;
-    if (activeTab == null)
-        title = "Enable LiveReload";
-    else if (activeTab == tab)
-        title = "Disable LiveReload";
-    else
-        title = "Switch LiveReload to this page";
-    event.target.title = title;
+    event.target.title = tabs.indexOf(tab) == -1 ?
+        'Enable LiveReload' :
+        'Disable LiveReload';
 }, false);

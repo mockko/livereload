@@ -140,8 +140,6 @@ A global config file (`~/.livereload`) is also supported if you happen to need o
 
 ## Limitations
 
-Note that you can only have one page monitored, so if you enable LiveReload on another page, the first one will stop reloading.
-
 LiveReload does not work with local files in Safari.
 
 ## Spread the word

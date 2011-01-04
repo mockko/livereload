@@ -1,5 +1,15 @@
 
-var activeTabId = null;
+// LiveReload-enabled tabs
+var tabs = [];
+tabs.add = function(id){
+    var index = this.indexOf(id);
+    return index == -1 ? this.push(id) : index;
+};
+tabs.__defineGetter__('last', function(){
+    var length = this.length;
+    return length ? this[length - 1] : null;
+});
+
 var ws = null;
 var disconnectionReason = 'unexpected';
 var api_version = "1.5";
@@ -9,12 +19,16 @@ var versionInfoReceived = false;
 var host = (navigator.appVersion.indexOf("Linux") >= 0 ? "0.0.0.0" : "localhost");
 
 function establishConnection() {
-    if (ws != null) return;
+    if (ws) {
+        throw 'WebSocket already opened';
+    }
     ws = new WebSocket("ws://" + host + ":35729/websocket");
     disconnectionReason = 'cannot-connect';
     versionInfoReceived = false;
     ws.onmessage = function(evt) {
-        if (activeTabId == null) return;
+        if (tabs.length == 0) {
+            throw 'No tabs';
+        }
         var m, data = evt.data;
         if (m = data.match(/!!ver:([\d.]+)/)) {
             versionInfoReceived = true;
@@ -45,7 +59,9 @@ function establishConnection() {
             deactivated();
             return;
         }
-        chrome.tabs.sendRequest(activeTabId, data);
+        tabs.forEach(function(tabId){
+            chrome.tabs.sendRequest(tabId, data);
+        });
     };
     ws.onclose = function() {
         if (disconnectionReason == 'cannot-connect') {
@@ -55,23 +71,24 @@ function establishConnection() {
     };
     ws.onopen = function() {
         disconnectionReason = 'broken';
-        if (activeTabId != null)
-            sendTabUrl();
+        sendTabUrl();
     };
 }
 
 function sendTabUrl() {
-    chrome.tabs.get(activeTabId, function(tab) {
-        if (ws != null)
-            ws.send(tab.url);
+    var activeTab = tabs.last;
+    if (activeTab == null) {
+        throw 'No active tab';
+    }
+    chrome.tabs.get(activeTab, function(tab) {
+        ws && ws.send(tab.url);
     });
 }
 
 function closeConnection() {
-    if (ws != null) {
+    if (ws) {
         disconnectionReason = 'manual';
         ws.close();
-        ws = null;
     }
     deactivated();
 }
@@ -92,33 +109,40 @@ function activated() {
 
 function deactivated() {
     ws = null;
-    activeTabId = null;
+    tabs.length = 0;
     versionInfoReceived = false;
     iconDeactivated();
 }
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     var tabId = tab.id;
-    if (activeTabId == tabId) {
-        closeConnection();
-    } else {
-        var wasActive = (activeTabId != null);
-        try {
-            establishConnection();
-        } catch(e) {
-            alert("Failed to establish connection: " + e.message);
-            activeTabId = null;
-            return;
+    var index = tabs.indexOf(tabId);
+    if (index > -1) {
+        tabs.splice(index, 1);
+        //TODO: log on the server about disconected pages
+        if (tabs.length == 0) {
+            closeConnection();
+        } else {
+            iconDeactivated();
         }
-        activeTabId = tabId;
-        if (wasActive)
+    } else {
+        tabs.add(tabId);
+        if (ws && ws.readyState == 1) {
             sendTabUrl();
+        } else {
+            try {
+                establishConnection();
+            } catch(e) {
+                alert('Failed to establish connection: ' + e.message);
+                return;
+            }
+        }
         activated();
     }
 }, false);
 
 chrome.tabs.onSelectionChanged.addListener(function(tabId, selectInfo) {
-    if (activeTabId == tabId) {
+    if (tabs.indexOf(tabId) > -1) {
         iconActivated();
     } else {
         iconDeactivated();
