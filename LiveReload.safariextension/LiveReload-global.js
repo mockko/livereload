@@ -56,6 +56,7 @@ function establishConnection() {
             deactivated();
             return;
         }
+        killZombies();
         tabs.forEach(function(tab){
             tab.page.dispatchMessage('LiveReload', data);
         });
@@ -94,8 +95,19 @@ function deactivated() {
     versionInfoReceived = false;
 }
 
+// http://stackoverflow.com/questions/4587500/catching-close-tab-event-in-a-safari-extension
+function killZombies(){
+    for (var i = tabs.length; i--;) {
+        if (!tabs[i].url) {
+            tabs.splice(i, 1);
+        }
+    }
+}
+
 safari.application.addEventListener("command", function(event) {
     if (event.command == 'enable') {
+        killZombies();
+
         var tab = safari.application.activeBrowserWindow.activeTab;
         var index = tabs.indexOf(tab);
         if (index > -1) {
