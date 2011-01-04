@@ -148,3 +148,13 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId, selectInfo) {
         iconDeactivated();
     }
 }, false);
+
+chrome.tabs.onRemoved.addListener(function(tabId) {
+    var index = tabs.indexOf(tabId);
+    if (index > -1) {
+        tabs.splice(index, 1);
+        if (tabs.length == 0) {
+            closeConnection();
+        }
+    }
+});
