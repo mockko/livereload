@@ -12,60 +12,88 @@ tabs.__defineGetter__('last', function(){
 
 var ws = null;
 var disconnectionReason = 'unexpected';
-var api_version = "1.5";
+
+function Version(version){
+    var triple = version.split('.').map(function(n){
+        return parseInt(n);
+    });
+    this.triple = triple;
+    this.asFloat = parseFloat(triple[0] + '.' + triple[1]);
+}
+Version.prototype = {
+    toString: function(){
+        return this.triple.join('.');
+    }
+};
+var api_version = new Version('1.5.1');
 var versionInfoReceived = false;
 // localhost does not work on Linux b/c of http://code.google.com/p/chromium/issues/detail?id=36652,
 // 0.0.0.0 does not work on Windows
 var host = (navigator.appVersion.indexOf("Linux") >= 0 ? "0.0.0.0" : "localhost");
+var port = '35729';
+var uri = 'ws://' + host + ':' + port + '/websocket';
+
+
+/**
+ * @param {string} data
+ * @return {boolean} true on succes, false on error
+ */
+function checkVersion(data) {
+    var m = data.match(/!!ver:([\d.]+)/);
+    if (m) {
+        var serverVersion = new Version(m[1]).asFloat;
+        // Compare only major and minor versions. Do not compare patch version.
+        if (serverVersion == api_version.asFloat) {
+            return true;
+        } else {
+            if (serverVersion > api_version.asFloat) {
+                alert('You need to update the command-line tool to continue using LiveReload.\n\n'
+                    + 'Extension version: ' + api_version + '\n'
+                    + 'Command-line tool version: ' + m[1] + '\n\n'
+                    + 'Please run the following command to update your command-line tool:\n'
+                    + '    gem update livereload');
+            } else {
+                alert('You need to update the browser extension to continue using LiveReload.\n\n' + 'Extension version: ' + api_version + '\n' + 'Command-line tool version: ' + m[1] + '\n\n' + 'Please go to the extensions manager and check for updates.');
+            }
+        }
+    } else {
+        alert('You are using an old incompatible version of the command-line tool.\n\n'
+            + 'Please run the following command to update your command-line tool:\n'
+            + '    gem update livereload');
+    }
+    return false;
+}
+
 
 function establishConnection() {
     if (ws) {
         throw 'WebSocket already opened';
     }
-    ws = new WebSocket("ws://" + host + ":35729/websocket");
+    ws = new WebSocket(uri);
     disconnectionReason = 'cannot-connect';
     versionInfoReceived = false;
     ws.onmessage = function(evt) {
         if (tabs.length == 0) {
             throw 'No tabs';
         }
-        var m, data = evt.data;
-        if (m = data.match(/!!ver:([\d.]+)/)) {
-            versionInfoReceived = true;
-            if (m[1] != api_version) {
-                if (api_version > m[1]) {
-                    alert("You need to update the command-line tool to continue using LiveReload.\n\n" +
-                        "Extension version: " + api_version + "\n" +
-                        "Command-line tool version: " + m[1] + "\n\n" +
-                        "Please run the following command to update your command-line tool:\n" +
-                        "    gem update livereload");
-                } else {
-                    alert("You need to update the browser extension to continue using LiveReload.\n\n" +
-                        "Extension version: " + api_version + "\n" +
-                        "Command-line tool version: " + m[1] + "\n\n" +
-                        "Please go to the extensions manager and check for updates.");
-                }
+        var data = evt.data;
+        if (!versionInfoReceived) {
+            if (checkVersion(data)) {
+                versionInfoReceived = true;
+            } else {
                 disconnectionReason = 'version-mismatch';
                 ws.close();
                 deactivated();
             }
-            return;
-        } else if (!versionInfoReceived) {
-            alert("You are using an old incompatible version of the command-line tool.\n\n" +
-                "Please run the following command to update your command-line tool:\n" +
-                "    gem update livereload");
-            disconnectionReason = 'version-mismatch';
-            ws.close();
-            deactivated();
-            return;
+        } else {
+            tabs.forEach(function(tabId){
+                chrome.tabs.sendRequest(tabId, data);
+            });
         }
-        tabs.forEach(function(tabId){
-            chrome.tabs.sendRequest(tabId, data);
-        });
     };
     ws.onclose = function() {
         if (disconnectionReason == 'cannot-connect') {
-            alert("Cannot connect to LiveReload server. Please update livereload gem to 1.5 (if you haven't already) and run livereload command from the directory you want to watch.");
+            alert('Cannot connect to LiveReload server:\n' + uri);
         }
         deactivated();
     };
