@@ -53,8 +53,8 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>http://github.com/mockko/livereload/raw/master/LiveReload-update.plist</string>
+	<string>https://github.com/mockko/livereload/raw/master/LiveReload-update.plist</string>
 	<key>Website</key>
-	<string>http://github.com/mockko/livereload</string>
+	<string>https://github.com/mockko/livereload</string>
 </dict>
 </plist>
