@@ -36,19 +36,30 @@ LiveReload consists of command-line monitoring tool (livereload ruby gem) and br
 
 ### Monitoring tool
 
-1. You need Ruby installed. Mac OS X users already have it, Windows users get it from [ruby-lang.org](http://www.ruby-lang.org/en/downloads/).
+#### Windows
 
-2. On Mac OS X you need Xcode tools (to compile eventmachine gem) and [RubyCocoa](http://sourceforge.net/projects/rubycocoa/) installed, then:
+1. Install Ruby from [rubyinstaller.org/downloads](http://rubyinstaller.org/downloads/). LiveReload has been tested on Ruby 1.9.1 and 1.8.7.
 
-        sudo gem install livereload
+2. Download Ruby Development Kit from the same page and follow [instructions](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit).
 
-    on Linux:
+3. `gem install eventmachine-win32 win32-changenotify win32-event livereload --platform=ruby`
 
-        sudo gem install rb-inotify livereload
 
-    on Windows:
+#### Mac OS X
 
-        gem install eventmachine-win32 win32-changenotify win32-event livereload
+1. Mac OS X ships with Ruby installed.
+
+2. You need Xcode tools installed to compile eventmachine gem. Get it from [developer.apple.com](http://developer.apple.com/technologies/tools/xcode.html).
+
+3. Install [RubyCocoa](http://sourceforge.net/projects/rubycocoa/).
+
+4. `sudo gem install livereload`
+
+
+#### Linux
+
+`sudo gem install rb-inotify livereload`
+
 
 Another option is to use [Guard](https://github.com/guard/guard) with [guard-livereload](https://github.com/guard/guard-livereload). It does not require RubyCocoa on Mac OS X.
 
