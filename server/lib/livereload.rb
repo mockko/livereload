@@ -186,7 +186,7 @@ module LiveReload
             if File.basename(path) == '.livereload'
               @when_changes_detected.call [:config_changed, path]
             else
-              @when_changes_detected.call [:modified, path]
+              @when_changes_detected.call [:modified, File.join(@directory, path)]
             end
           end
         rescue
