@@ -3,7 +3,6 @@
 function LivereloadContent(document) {
     this.document = document;
     this.strictMode = this.strictModePossible(document);
-    this.constructor = LivereloadContent;
 }
 
 LivereloadContent.prototype = {
@@ -482,8 +481,9 @@ LivereloadContent.prototype = {
         if (!found) {
             this.handleNotFound(nameToReload);
         }
-    }
+    },
 
+    constructor: LivereloadContent
 };
 
 LivereloadContent.prototype['.js'] = LivereloadContent.prototype.handleJS;
