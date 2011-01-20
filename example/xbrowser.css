@@ -1,0 +1,16 @@
+html {
+    font-family: sans-serif;
+    background-color: beige;
+}
+
+body {
+    max-width: 300px;
+    margin: 0 auto;
+}
+h1 {
+    font: 150% futura, sans-serif;
+}
+ol, li {
+    margin: .4em 0;
+    padding-left: 0; 
+}

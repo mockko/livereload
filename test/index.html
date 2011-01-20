@@ -3,15 +3,24 @@
 <head>
 	<title>LiveReload tests</title>
 	<link rel="stylesheet" href="qunit/qunit.css">
+    <style>
+    iframe {
+        min-height: 400px;
+        min-width: 300px;
+        width: 49%;
+    }
+    </style>
 	<script src="qunit/qunit.js"></script>
-    <script src="../src/core.js"></script>
-    <script src="utils.js"></script>
-    <script src="core.test.js"></script>
+    <script src="../src/content.js"></script>
+    <script src="content.fileName.js"></script>
+    <script src="content.fileExtension.js"></script>
+    <script src="content.equals.js"></script>
+    <script src="content.generateNextUrl.js"></script>
+    <script src="content.handleCSS.js"></script>
 </head>
 <body id="qunit-wrapper">
 	<h1 id="qunit-header">LiveReload tests</h1>
 	<h2 id="qunit-banner"></h2>
-	<div id="qunit-testrunner-toolbar"></div>
 	<ol id="qunit-tests"></ol>
 	<h2 id="qunit-userAgent"></h2>
 	<div id="fixture">
@@ -20,5 +29,6 @@
             <span id="images_imported"></span>
         </p>
 	</div>
+    <div id="iframe_fixtures"></div>
 </body>
 </html>
