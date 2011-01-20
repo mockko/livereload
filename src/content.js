@@ -318,34 +318,41 @@ LivereloadContent.prototype = {
         return url.slice(4).slice(0, -1);
     },
 
+    handleJS: function(path, options) {
+        var reloaded = 0;
 
-    handleJS: function(nameToReload) {
-        var found = 0;
+        options = options || {};
+        if (!options.apply_js_live) {
+            this.handleDefault(path, options);
+            return reloaded;
+        }
+
         var scripts = Array.prototype.slice.call(this.document.scripts, 0);
         for (var i = 0; i < scripts.length; i++) {
             var script = scripts[i];
-            if (script.src && this.equals(script.src, nameToReload)) {
-                found++;
-                if (this.apply_js_live) {
-                    this.reloadScript(script);
-                } else {
-                    this.document.location.reload();
-                    break;
-                }
+            if (script.src && this.equals(script.src, path)) {
+                this.reloadScript(script);
+                reloaded++;
             }
         }
-        return found;
+
+        return reloaded;
     },
 
-    handleCSS: function(nameToReload) {
+    handleCSS: function(path, options) {
         var reloaded = 0;
+
+        if (options && !options.apply_css_live) {
+            this.handleDefault(path, options);
+            return reloaded;
+        }
 
         var links = this.document.querySelectorAll('link[rel="stylesheet"]');
         // Clone it to avoid changes.
         links = [].slice.call(links, 0);
         for (var i = 0; i < links.length; i++) {
             var link = links[i];
-            if (this.equals(link.href, nameToReload)) {
+            if (this.equals(link.href, path)) {
                 reloaded += this.reattachStylesheetLink(link);
             } else if (this.apply_imported_css) {
                 try {
@@ -357,7 +364,7 @@ LivereloadContent.prototype = {
                     this.warn(error.message);
                 }
                 if (canAccess && this.apply_imported_css >= 2) {
-                    reloaded += this.reloadImportedStylesheet(stylesheet, (this.apply_imported_css >= 3 ? '' : nameToReload));
+                    reloaded += this.reloadImportedStylesheet(stylesheet, (this.apply_imported_css >= 3 ? '' : path));
                 } else {
                     reloaded += this.reattachStylesheetLink(link);
                 }
@@ -371,15 +378,15 @@ LivereloadContent.prototype = {
                 if (!sheet) {
                     continue;
                 }
-                reloaded += this.reloadImportedStylesheet(sheet, nameToReload);
+                reloaded += this.reloadImportedStylesheet(sheet, path);
             }
         }
 
         if (!reloaded) {
             if (this.strictMode) {
-                this.log('LiveReload: "' + nameToReload + '" does not correspond to any stylesheet. Do nothing.');
+                this.log('LiveReload: "' + path + '" does not correspond to any stylesheet. Do nothing.');
             } else {
-                this.log('LiveReload: "' + nameToReload + '" does not correspond to any stylesheet. Reloading all of them.');
+                this.log('LiveReload: "' + path + '" does not correspond to any stylesheet. Reloading all of them.');
                 for (i = 0; i < links.length; i++) {
                     reloaded += this.reattachStylesheetLink(links[i]);
                 }
@@ -394,16 +401,22 @@ LivereloadContent.prototype = {
         return reloaded;
     },
 
-    handleImages: function(nameToReload) {
-        var found = 0;
+    handleImages: function(path, options) {
+        var reloaded = 0;
+
+        if (options && !options.apply_images_live) {
+            this.handleDefault(path);
+            return reloaded;
+        }
+
         var stylesheets = this.document.styleSheets;
         var imgs = this.document.images;
         var expando = this.generateExpando();
         for (var i = 0; i < imgs.length; i++) {
             var img = imgs[i];
-            if (this.equals(img.src, nameToReload)) {
+            if (this.equals(img.src, path)) {
                 img.src = this.generateNextUrl(img.src, expando);
-                found++;
+                reloaded++;
             }
         }
         var src;
@@ -414,9 +427,9 @@ LivereloadContent.prototype = {
                 continue;
             }
             src = this.extractURL(img.style.backgroundImage);
-            if (src && this.equals(src, nameToReload)) {
+            if (src && this.equals(src, path)) {
                 img.style.backgroundImage = 'url(' + this.generateNextUrl(src, expando) + ')';
-                found++;
+                reloaded++;
             }
         }
 
@@ -427,33 +440,54 @@ LivereloadContent.prototype = {
                 continue;
             }
             src = this.extractURL(img.style.borderImage);
-            if (src && this.equals(src, nameToReload)) {
+            if (src && this.equals(src, path)) {
                 img.style.borderImage = 'url(' + this.generateNextUrl(src, expando) + ')';
-                found++;
+                reloaded++;
             }
         }
 
         for (i = 0; i < stylesheets.length; i++) {
-            found += this.reloadStylesheetImages(stylesheets[i], nameToReload, expando).length;
+            reloaded += this.reloadStylesheetImages(stylesheets[i], path, expando).length;
         }
 
-        return found;
+        return reloaded;
     },
 
-    handleNotFound: function(nameToReload) {
-        this.handleAnythingElse(nameToReload);
-    },
-
-    handleAnythingElse: function(nameToReload) {
+    handleHTML: function(path) {
         if (this.document.location.protocol == 'file:') {
-            if (this.equals(document.location.href, nameToReload)) {
+            if (this.equals(document.location.href, path)) {
                 this.document.location.reload();
             } else {
-                this.log(nameToReload + ' does not match any file. Do nothing.');
+                this.log(path + ' does not match any file. Do nothing.');
             }
         } else {
             this.document.location.reload();
         }
+    },
+
+    handleDefault: function(path) {
+        this.document.location.reload();
+    },
+
+    /**
+     * @param {Object} options
+     * @nosideeffects
+     * @return {Object}
+     */
+    mergeConfig: function(options) {
+        if (!this.strictMode) {
+            options.path = this.fileName(options.path);
+        }
+        if (options.apply_js_live === undefined) {
+            options.apply_js_live = this.apply_js_live;
+        }
+        if (options.apply_css_live === undefined) {
+            options.apply_css_live = this.apply_css_live;
+        }
+        if (options.apply_images_live === undefined) {
+            options.apply_images_live = this.apply_images_live;
+        }
+        return options;
     },
 
     /**
@@ -464,22 +498,14 @@ LivereloadContent.prototype = {
         if (parsed[0] != 'refresh') {
             throw 'Unknown command: ' + parsed[0];
         }
-
-        var options = parsed[1];
-        var nameToReload = this.strictMode ? options.path : this.fileName(options.path);
-        var extension = this.fileExtension(options.path);
-        var applyJSLive = (options.apply_js_live !== undefined ? !!options.apply_js_live : true);
-        var applyCSSLive = (options.apply_css_live !== undefined ? !!options.apply_css_live : true);
-        var applyImagesLive = (options.apply_images_live === undefined ? true : !!options.apply_css_live);
+        var options = this.mergeConfig(parsed[1]);
+        var path = options.path || '';
+        var extension = this.fileExtension(path);
 
         if (typeof this[extension] == 'function') {
-            var found = this[extension](nameToReload);
+            this[extension](path, options);
         } else {
-            this.handleAnythingElse(nameToReload);
-        }
-
-        if (!found) {
-            this.handleNotFound(nameToReload);
+            this.handleDefault(path, options);
         }
     },
 
@@ -492,4 +518,8 @@ LivereloadContent.prototype['.jpg'] =
 LivereloadContent.prototype['.jpeg'] =
 LivereloadContent.prototype['.png'] =
 LivereloadContent.prototype['.gif'] = LivereloadContent.prototype.handleImages;
+LivereloadContent.prototype['.html'] =
+LivereloadContent.prototype['.htm'] =
+LivereloadContent.prototype['.xhtml'] =
+LivereloadContent.prototype['.xml'] = LivereloadContent.prototype.handleHTML;
 
