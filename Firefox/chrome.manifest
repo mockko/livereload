@@ -1,0 +1,4 @@
+content   livereload                 content/
+skin      livereload   classic/1.0   skin/
+
+overlay   chrome://browser/content/browser.xul   chrome://livereload/content/browser.xul

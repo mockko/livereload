@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://livereload/skin/overlay.css" type="text/css"?>
+
+<overlay id="livereload-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="content.js"/>
+  <script src="background.js"/>
+  <script src="background-firefox.js"/>
+
+  <statusbar id="status-bar">
+    <statusbarpanel id="livereload-icon" class="statusbarpanel-iconic" tooltiptext="Enable LiveReload" src="chrome://livereload/skin/icon_16-off.png" label="LR"/>
+  </statusbar>
+</overlay>

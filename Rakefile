@@ -33,6 +33,18 @@ task :safari do
 end
 
 
+task :firefox do
+  require 'fileutils'
+  dest_dir = 'Firefox/content'
+  FileUtils.cp %w(src/background.js src/content.js), dest_dir
+  puts "+ #{dest_dir}/background.js"
+  puts "+ #{dest_dir}/content.js"
+  puts 'LiveReload.xpi: '
+  system 'cd Firefox && zip -r ../LiveReload.xpi .'
+  puts '+ LiveReload.xpi (drag it into Firefox window to install)'
+end
+
+
 namespace :gem do
    file GEM_DIST => GEM_SRC do
       cd 'server' do
@@ -97,3 +109,15 @@ task :test do
   serv.join
   serv2.join
 end
+
+
+require 'rake/clean'
+CLEAN.include('LiveReload.xpi')
+CLOBBER.include(%w(
+  LiveReload.chromeextension/LiveReload-content.js
+  LiveReload.chromeextension/LiveReload-background.js
+  LiveReload.safariextension/LiveReload-injected.js
+  LiveReload.safariextension/LiveReload-global.js
+  Firefox/content/background.js
+  Firefox/content/content.js
+))
