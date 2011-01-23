@@ -110,7 +110,7 @@ LivereloadBackground.prototype = {
     },
 
     _onclose: function(e) {
-        this.log('disconnected from ' + e.target.URL);
+        this.log('disconnected from ' + (e.target.URL || e.target.url));
         if (this.disconnectionReason == 'cannot-connect') {
             this.alert('Cannot connect to LiveReload server:\n' + this.uri);
         }
@@ -118,7 +118,7 @@ LivereloadBackground.prototype = {
     },
 
     _onopen: function(e) {
-        this.log('connected to ' + e.target.URL);
+        this.log('connected to ' + (e.target.URL || e.target.url));
         this.disconnectionReason = 'broken';
         this.sendPageUrl();
     },
