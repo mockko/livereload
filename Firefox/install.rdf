@@ -9,6 +9,7 @@
     <em:creator>Nikita Vasilyev</em:creator>
     <em:contributor>Andrey Tarantsov</em:contributor>
     <em:homepageURL>http://livereload.com/</em:homepageURL>
+    <em:iconURL>chrome://livereload/skin/icon_32.png</em:iconURL>
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- Firefox -->
