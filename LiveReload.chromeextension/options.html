@@ -75,10 +75,10 @@ h2 {
 function save_options() {
 	var host = document.getElementById("host").value;
 	localStorage["host"] = host;
-	
+
 	var port = document.getElementById("port").value;
 	localStorage["port"] = port;
-	
+
 	var bkg = chrome.extension.getBackgroundPage();
 	bkg.livereload.updateSettings();
 
@@ -95,7 +95,7 @@ function restore_options() {
 	var hostEl = document.getElementById("host");
 	hostEl.value = localStorage["host"] ?
 		localStorage["host"] : '';
-	
+
 	var portEl = document.getElementById("port");
 	portEl.value = localStorage["port"] ?
 		localStorage["port"] : '';
