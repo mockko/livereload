@@ -1,0 +1,120 @@
+<html>
+<head>
+<title>LiveReload Options</title>
+<style type="text/css">
+body {
+	background-color: #ececec;
+	color: #565656;
+	font: 62.5% Helvetica, Arial, sans-serif;
+}
+
+.wrapper {
+	margin: 0 auto;
+	position: relative;
+	width: 320px;
+}
+
+h2 {
+	font-size: 2em;
+	margin: 25px 0 0;
+	text-align: center;
+}
+
+#options {
+	-webkit-border-radius: 20px;
+	-webkit-box-shadow: 2px 2px 10px #ccc;
+	background-color: #fff;
+	margin: 25px auto 0;
+	padding: 25px 10px;
+	text-align: center;
+	width: 260px;
+}
+
+#options label {
+	display: block;
+	font-size: 1.65em;
+	font-weight: bold;
+	letter-spacing: -0.025em;
+	margin: 0 0 5px 15px;
+	text-align: left;
+}
+
+#options input {
+	-webkit-border-radius: 5px;
+	background-color: #eaeaea;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffff), color-stop(1.0, #eaeaea));
+	border: 1px solid #cacaca;
+	color: #444;
+	font-size: 1.4em;
+	margin: 0 0 25px;
+	padding: 8px 10px;
+	width: 240px;
+}
+
+#options button {
+	-webkit-border-radius: 5px;
+	background-color: #dedede;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffff), color-stop(1.0, #dedede));
+	border: 1px solid #dedede;
+	color: #484848;
+	font-size: 1.65em;
+	font-weight: bold;
+	padding: 10px 15px;
+}
+
+#status {
+	text-align: center;
+	font-size: 120%;
+	padding: 1em;
+}
+</style>
+</head>
+<script type="text/javascript">
+
+// Saves options to localStorage.
+function save_options() {
+	var host = document.getElementById("host").value;
+	localStorage["host"] = host;
+	
+	var port = document.getElementById("port").value;
+	localStorage["port"] = port;
+	
+	var bkg = chrome.extension.getBackgroundPage();
+	bkg.livereload.updateSettings();
+
+	// Update status to let user know options were saved.
+	var status = document.getElementById("status");
+	status.innerHTML = "Options Saved.";
+	setTimeout(function() {
+		status.innerHTML = "";
+	}, 750);
+}
+
+// Restores select box state to saved value from localStorage.
+function restore_options() {
+	var hostEl = document.getElementById("host");
+	hostEl.value = localStorage["host"] ?
+		localStorage["host"] : '';
+	
+	var portEl = document.getElementById("port");
+	portEl.value = localStorage["port"] ?
+		localStorage["port"] : '';
+}
+
+</script>
+
+<body onload="restore_options()">
+<h2>LiveReload Options</h2>
+<div id="options">
+  <label for="host">Host:</label>
+  <input id="host" type="text" placeholder="localhost">
+
+  <label for="port">Port:</label>
+  <input id="port" type="number" min="0" max="65535" value="35729">
+
+  <br>
+  <button onclick="save_options()">Save</button>
+</div>
+<div id="status"></div>
+</body>
+</html>

@@ -3,6 +3,20 @@ LivereloadBackgroundChrome.prototype = new LivereloadBackground(function reloadP
     chrome.tabs.sendRequest(tabId, data);
 });
 
+LivereloadBackgroundChrome.prototype.updateSettings = function () {
+    this.disconnect();
+};
+
+LivereloadBackgroundChrome.prototype.connect = function () {
+    if (localStorage['host']) this.host = localStorage['host'];
+    else this.host = this.__proto__.__proto__.host;
+
+    if (localStorage['port']) this.port = localStorage['port'];
+    else this.port = this.__proto__.__proto__.port;
+
+    this.__proto__.__proto__.connect.call(this);
+};
+
 LivereloadBackgroundChrome.prototype.sendPageUrl = function() {
     var activeTab = this.lastPage;
     if (activeTab == null) {

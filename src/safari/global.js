@@ -25,6 +25,16 @@ SafariLivereloadGlobal.prototype = new LivereloadBackground(function reloadTab(t
 });
 
 
+SafariLivereloadGlobal.prototype.connect = function () {
+    if (safari.extension.settings.host) this.host = safari.extension.settings.host;
+    else this.host = this.__proto__.__proto__.host;
+
+    if (safari.extension.settings.port) this.port = safari.extension.settings.port;
+    else this.port = this.__proto__.__proto__.port;
+
+    this.__proto__.__proto__.connect.call(this);
+};
+
 SafariLivereloadGlobal.prototype.sendPageUrl = function() {
     var activePage = this.lastPage;
     if (activePage == null) {
@@ -71,4 +81,8 @@ safari.application.addEventListener('validate', function(event) {
     } else {
         event.target.title = 'Disable LiveReload';
     }
+}, false);
+
+safari.extension.settings.addEventListener("change", function(event) {
+    livereload.disconnect();
 }, false);
