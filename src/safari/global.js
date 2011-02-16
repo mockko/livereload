@@ -43,6 +43,10 @@ SafariLivereloadGlobal.prototype.sendPageUrl = function() {
     this.socket && this.socket.send(activePage.href);
 };
 
+SafariLivereloadGlobal.prototype.alert = function(message) {
+    console.error(message);
+};
+
 // http://stackoverflow.com/questions/4587500/catching-close-tab-event-in-a-safari-extension
 SafariLivereloadGlobal.prototype.killZombies = function() {
     for (var i = this.pages.length; i--;) {
