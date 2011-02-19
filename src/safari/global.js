@@ -1,24 +1,3 @@
-if (!Function.prototype.bind) {
-    /**
-     * @param {Object} thisObject
-     * @nosideeffects
-     * @see http://trac.webkit.org/browser/trunk/Source/WebCore/inspector/front-end/utilities.js
-     * @return {Function}
-     */
-    Function.prototype.bind = function(thisObject) {
-        var func = this;
-        var args = Array.prototype.slice.call(arguments, 1);
-        function bound() {
-            return func.apply(thisObject, args.concat(Array.prototype.slice.call(arguments, 0)));
-        }
-        bound.toString = function() {
-            return 'bound: ' + func;
-        };
-        return bound;
-    }
-}
-
-
 function SafariLivereloadGlobal() {}
 SafariLivereloadGlobal.prototype = new LivereloadBackground(function reloadTab(tab, data) {
     tab.page.dispatchMessage('LiveReload', data);
