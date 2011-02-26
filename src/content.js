@@ -327,7 +327,7 @@ LivereloadContent.prototype = {
             return reloaded;
         }
 
-        var scripts = Array.prototype.slice.call(this.document.scripts, 0);
+        var scripts = [].slice.call(this.document.scripts, 0);
         for (var i = 0; i < scripts.length; i++) {
             var script = scripts[i];
             if (script.src && this.equals(script.src, path)) {
