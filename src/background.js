@@ -92,38 +92,35 @@ LivereloadBackground.prototype = {
     },
 
     _onmessage: function(event) {
-        var lr = this.lr;
-        if (lr.pages.length == 0) {
+        if (this.pages.length == 0) {
             throw 'No pages';
         }
         var data = event.data;
-        lr.log('received: ' + data);
-        if (!lr.versionInfoReceived) {
-            if (lr.checkVersion(data)) {
-                lr.versionInfoReceived = true;
+        this.log('received: ' + data);
+        if (!this.versionInfoReceived) {
+            if (this.checkVersion(data)) {
+                this.versionInfoReceived = true;
             } else {
-                lr.disconnectionReason = 'version-mismatch';
+                this.disconnectionReason = 'version-mismatch';
                 event.target.close();
             }
         } else {
-            lr.reloadPages(data);
+            this.reloadPages(data);
         }
     },
 
     _onclose: function(e) {
-        var lr = this.lr;
-        lr.log('disconnected from ' + (e.target.URL || e.target.url));
-        if (lr.disconnectionReason == 'cannot-connect') {
-            lr.alert('Cannot connect to LiveReload server:\n' + lr.uri);
+        this.log('disconnected from ' + (e.target.URL || e.target.url));
+        if (this.disconnectionReason == 'cannot-connect') {
+            this.alert('Cannot connect to LiveReload server:\n' + this.uri);
         }
-        lr.onDisconnect();
+        this.onDisconnect();
     },
 
     _onopen: function(e) {
-        var lr = this.lr;
-        lr.log('connected to ' + (e.target.URL || e.target.url));
-        lr.disconnectionReason = 'broken';
-        lr.sendPageUrl();
+        this.log('connected to ' + (e.target.URL || e.target.url));
+        this.disconnectionReason = 'broken';
+        this.sendPageUrl();
     },
 
     _onerror: function(event) {
@@ -135,14 +132,15 @@ LivereloadBackground.prototype = {
             throw 'WebSocket already opened';
         }
         var socket = this.socket = new WebSocket(this.uri);
-        socket.lr = this;
 
         this.disconnectionReason = 'cannot-connect';
         this.versionInfoReceived = false;
-        socket.onopen = this._onopen;
-        socket.onmessage = this._onmessage;
-        socket.onclose = this._onclose;
-        socket.onerror = this._onerror;
+
+        var self = this;
+        socket.onopen    = function(e) { return self._onopen(e); };
+        socket.onmessage = function(e) { return self._onmessage(e); };
+        socket.onclose   = function(e) { return self._onclose(e); };
+        socket.onerror   = function(e) { return self._onerror(e); };
     },
 
     disconnect: function() {
