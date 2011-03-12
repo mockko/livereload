@@ -12,6 +12,8 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 
 ## What's new?
 
+1.6: Configurable host & port, no-extension pure-html/js cross-browser version (see `example/xbrowser.html`, more docs coming soon), many small bug fixes.
+
 1.5: Support for `file://` URLs in Chrome (does not seem possible in Safari, sorry). JS live reloading is now off by default. Minor UI improvements.
 
 1.4: Works on Windows. Sane file system monitoring (had to write it from scratch, see em-dir-watcher gem). Port number changed to 35729 because of a conflict with Zend Server. Added grace period to combine the changes made in rapid succession. Works with Vim.
@@ -75,7 +77,7 @@ Click “Install”. Actually, LiveReload does not access your browser history. 
 
 ### Safari extension
 
-Download [LiveReload 1.5 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.5.safariextz). Double-click it and confirm installation:
+Download [LiveReload 1.6 extension](http://github.com/downloads/mockko/livereload/LiveReload-1.6.safariextz). Double-click it and confirm installation:
 
 ![](https://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
 

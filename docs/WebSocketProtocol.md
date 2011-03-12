@@ -2,7 +2,7 @@ WebSocket Protocol Details
 ==========================
 
 
-API versions 1.3–1.5 use JSON in the server-to-browser direction.
+API versions 1.3–1.6 use JSON in the server-to-browser direction.
 
 API version 1.2 was an extremely simple one.
 
@@ -12,7 +12,7 @@ Handshake
 
 After the connection is initiated, the server immediately sends API version info to the browser:
 
-    !!ver:1.5
+    !!ver:1.6
 
 If the browser is okay to speak this API version, it does nothing. If the browser does not support this version, it closes the connection.
 

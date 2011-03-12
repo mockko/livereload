@@ -13,7 +13,7 @@ function LivereloadBackground(reloadPage) {
 
 LivereloadBackground.prototype = {
 
-    apiVersion: '1.5.1',
+    apiVersion: '1.6',
 
     // localhost does not work on Linux b/c of http://code.google.com/p/chromium/issues/detail?id=36652,
     // 0.0.0.0 does not work on Windows

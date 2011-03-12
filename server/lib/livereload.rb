@@ -21,8 +21,8 @@ class Object
 end
 
 module LiveReload
-  GEM_VERSION = "1.5"
-  API_VERSION = "1.5"
+  GEM_VERSION = "1.6"
+  API_VERSION = "1.6"
 
   PROJECT_CONFIG_FILE_TEMPLATE = <<-END.strip.split("\n").collect { |line| line.strip + "\n" }.join("")
   # Lines starting with pound sign (#) are ignored.
