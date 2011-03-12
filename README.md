@@ -80,6 +80,11 @@ Download [LiveReload 1.5 extension](http://github.com/downloads/mockko/livereloa
 ![](https://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
 
 
+### [Firefox 4 extension](https://addons.mozilla.org/firefox/addon/livereload/)
+
+![](https://static.addons.mozilla.net/img/uploads/previews/full/53/53026.png)
+
+
 ## Usage
 
 Run the server in the directory you want to watch:
