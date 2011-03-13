@@ -67,7 +67,7 @@ LivereloadBackground.prototype = {
             if (server == client) {
                 return true;
             } else {
-                if (server > client) {
+                if (server < client) {
                     this.alert('You need to update the command-line tool to continue using LiveReload.\n\n'
                         + 'Extension version: ' + this.apiVersion + '\n'
                         + 'Command-line tool version: ' + m[1] + '\n\n'
