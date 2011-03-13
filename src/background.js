@@ -74,7 +74,10 @@ LivereloadBackground.prototype = {
                         + 'Please run the following command to update your command-line tool:\n'
                         + '    gem update livereload');
                 } else {
-                    this.alert('You need to update the browser extension to continue using LiveReload.\n\n' + 'Extension version: ' + this.apiVersion + '\n' + 'Command-line tool version: ' + m[1] + '\n\n' + 'Please go to the extensions manager and check for updates.');
+                    this.alert('You need to update the browser extension to continue using LiveReload.\n\n'
+                        + 'Extension version: ' + this.apiVersion + '\n'
+                        + 'Command-line tool version: ' + m[1] + '\n\n'
+                        + 'Please go to the extensions manager and check for updates.');
                 }
             }
         } else {
