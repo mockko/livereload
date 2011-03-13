@@ -243,7 +243,7 @@ LivereloadContent.prototype = {
             if (rule.parentRule) {
                 throw '@import inside CSS rule? Impossible!';
             }
-            index = Array.prototype.indexOf.call(parent.cssRules, rule);
+            index = [].indexOf.call(parent.cssRules, rule);
         }
         var href = rule.href;
         this.log('Reloading imported stylesheet: ' + href);
