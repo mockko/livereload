@@ -4,6 +4,24 @@ LivereloadBackgroundFirefox.prototype = new LivereloadBackground(function reload
     client.reload(data);
 });
 
+LivereloadBackgroundFirefox.prototype.connect = function () {
+	var self = this;
+
+	this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
+         .getService(Components.interfaces.nsIPrefService)
+         .getBranch("livereload.");
+    this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+    this.prefs.addObserver("", {observe: function () {
+        self.disconnect();
+    }}, false);
+
+    this.host = this.prefs.getCharPref("host");
+
+    this.port = this.prefs.getIntPref("port");
+
+    this.__proto__.__proto__.connect.call(this);
+};
+
 LivereloadBackgroundFirefox.prototype.sendPageUrl = function() {
     var activeTab = this.lastPage;
     if (activeTab == null) {
