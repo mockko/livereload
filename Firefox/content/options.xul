@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+ 
+<prefwindow id="livereload-prefs"
+     title="LiveReload Options"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+ 
+<prefpane id="lr-options-pane" label="LiveReload Settings">
+  <preferences>
+    <preference id="pref_host" name="livereload.host" type="string"/>
+    <preference id="pref_port" name="livereload.port" type="int"/>
+  </preferences>
+  
+  <vbox>
+    <hbox align="center">
+      <label control="symbol" value="Host: "/>
+      <textbox preference="pref_host" id="host"/>
+    </hbox>
+    <hbox align="center">
+      <label control="symbol" value="Port: "/>
+      <textbox preference="pref_port" id="port" maxlength="5"/>
+    </hbox>
+  </vbox>
+</prefpane>
+ 
+</prefwindow>
