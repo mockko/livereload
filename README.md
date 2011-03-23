@@ -53,7 +53,7 @@ LiveReload consists of command-line monitoring tool (livereload ruby gem) and br
 
 2. You need Xcode tools installed to compile eventmachine gem. Get it from [developer.apple.com](http://developer.apple.com/technologies/tools/xcode.html).
 
-3. Install [RubyCocoa](http://sourceforge.net/projects/rubycocoa/).
+3. Install [RubyCocoa](http://sourceforge.net/projects/rubycocoa/). If you are using [rvm](http://rvm.beginrescueend.com/), you can try [these instructions](https://gist.github.com/289868).
 
 4. `sudo gem install livereload`
 
