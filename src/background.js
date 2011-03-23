@@ -38,7 +38,7 @@ LivereloadBackground.prototype = {
     },
 
     alert: function(message) {
-        alert('LiveReload ' + message);
+        alert(message);
     },
 
     log: function(message) {
@@ -131,6 +131,14 @@ LivereloadBackground.prototype = {
     },
 
     connect: function() {
+        if (!window.WebSocket) {
+            if (window.opera) {
+                throw 'WebSocket is disabled. To turn it on, open \nopera:config#UserPrefs|EnableWebSockets and check in the checkbox.';
+            } else if (navigator.userAgent.indexOf('Firefox/4') != -1) {
+                throw 'WebSocket is disabled.\nTo turn it on, open about:config and set network.websocket.override-security-block to true.';
+            }
+        }
+
         if (this.socket) {
             throw 'WebSocket already opened';
         }
@@ -178,7 +186,7 @@ LivereloadBackground.prototype = {
             try {
                 this.connect();
             } catch(e) {
-                this.alert('Failed to establish connection ' + e.message);
+                this.alert('LiveReload failed to establish connection: ' + (e && e.message || e));
                 return;
             }
         }
