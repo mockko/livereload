@@ -8,6 +8,7 @@
     <em:version>0.6.1</em:version>
     <em:creator>Nikita Vasilyev</em:creator>
     <em:contributor>Andrey Tarantsov</em:contributor>
+    <em:contributor>Stefan Thomas</em:contributor>
     <em:homepageURL>http://livereload.com/</em:homepageURL>
     <em:iconURL>chrome://livereload/skin/icon_32.png</em:iconURL>
     <em:optionsURL>chrome://livereload/content/options.xul</em:optionsURL>	
