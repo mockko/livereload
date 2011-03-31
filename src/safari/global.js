@@ -19,7 +19,7 @@ SafariLivereloadGlobal.prototype.sendPageUrl = function() {
     if (activePage == null) {
         throw 'No active page';
     }
-    this.socket && this.socket.send(activePage.href);
+    this.socket && this.socket.send(activePage.url);
 };
 
 SafariLivereloadGlobal.prototype.alert = function(message) {
