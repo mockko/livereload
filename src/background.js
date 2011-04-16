@@ -134,7 +134,7 @@ LivereloadBackground.prototype = {
         if (!window.WebSocket) {
             if (window.opera) {
                 throw 'WebSocket is disabled. To turn it on, open \nopera:config#UserPrefs|EnableWebSockets and check in the checkbox.';
-            } else if (navigator.userAgent.indexOf('Firefox/4') != -1) {
+            } else if (navigator.userAgent.indexOf('Firefox/') != -1) {
                 throw 'WebSocket is disabled.\nTo turn it on, open about:config and set network.websocket.override-security-block to true.';
             }
         }
