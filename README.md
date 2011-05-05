@@ -55,12 +55,12 @@ LiveReload consists of command-line monitoring tool (livereload ruby gem) and br
 
 3. Install [RubyCocoa](http://sourceforge.net/projects/rubycocoa/). If you are using [rvm](http://rvm.beginrescueend.com/), you can try [these instructions](https://gist.github.com/289868).
 
-4. `sudo gem install livereload`
+4. `gem install eventmachine livereload`
 
 
 #### Linux
 
-`sudo gem install rb-inotify livereload`
+`sudo gem install rb-inotify eventmachine livereload`
 
 
 Another option is to use [Guard](https://github.com/guard/guard) with [guard-livereload](https://github.com/guard/guard-livereload). It does not require RubyCocoa on Mac OS X.
