@@ -10,11 +10,11 @@
        <key>Developer Identifier</key>
        <string>D963M2VVCH</string>
        <key>CFBundleVersion</key>
-       <string>1.6.1</string>
+       <string>1.6.2</string>
        <key>CFBundleShortVersionString</key>
-       <string>1.6.1</string>
+       <string>1.6.2</string>
        <key>URL</key>
-       <string>http://github.com/downloads/mockko/livereload/LiveReload-1.6.1.safariextz</string>
+       <string>http://github.com/downloads/mockko/livereload/LiveReload-1.6.2.safariextz</string>
      </dict>
    </array>
 </dict>

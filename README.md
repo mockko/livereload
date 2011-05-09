@@ -77,7 +77,7 @@ Click “Install”. Actually, LiveReload does not access your browser history. 
 
 ### Safari extension
 
-Download [LiveReload 1.6.1 extension](https://github.com/downloads/mockko/livereload/LiveReload-1.6.1.safariextz). Double-click it and confirm installation:
+Download [LiveReload 1.6.2 extension](https://github.com/downloads/mockko/livereload/LiveReload-1.6.2.safariextz). Double-click it and confirm installation:
 
 ![](https://github.com/mockko/livereload/raw/master/docs/images/safari-install-prompt.png)
 
