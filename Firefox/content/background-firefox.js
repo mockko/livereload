@@ -32,12 +32,12 @@ LivereloadBackgroundFirefox.prototype.sendPageUrl = function() {
 };
 
 LivereloadBackgroundFirefox.prototype.onEnablePage = function(tabId) {
-    this.icon.src = 'chrome://livereload/skin/icon_16-on.png';
+    this.icon.image = 'chrome://livereload/skin/icon_16-on.png';
     this.icon.setAttribute('tooltiptext', 'Disable LiveReload');
 };
 
 LivereloadBackgroundFirefox.prototype.onDisablePage = function(tabId) {
-    this.icon.src = 'chrome://livereload/skin/icon_16-off.png';
+    this.icon.image = 'chrome://livereload/skin/icon_16-off.png';
     this.icon.setAttribute('tooltiptext', 'Enable LiveReload');
 };
 
@@ -47,7 +47,7 @@ window.addEventListener('load', function() {
     var livereloadBackground = new LivereloadBackgroundFirefox;
     //@debug window.livereloadBackground = livereloadBackground;
 
-    var icon = livereloadBackground.icon = document.getElementById('livereload-icon');
+    var icon = livereloadBackground.icon = document.getElementById('livereload-button');
 
     icon.addEventListener('command', function(event) {
         livereloadBackground.togglePage(event.view.gBrowser.selectedTab);
