@@ -6,7 +6,7 @@
   <script src="background.js"/>
   <script src="background-firefox.js"/>
 
-  <statusbar id="status-bar">
-    <statusbarpanel id="livereload-icon" class="statusbarpanel-iconic" tooltiptext="Enable LiveReload" src="chrome://livereload/skin/icon_16-off.png" label="LR"/>
-  </statusbar>
+  <toolbarpalette id="BrowserToolbarPalette">
+    <toolbarbutton id="livereload-button" label="LR" tooltiptext="Enable LiveReload" image="chrome://livereload/skin/icon_16-off.png"  type="button" class="toolbarbutton-1 chromeclass-toolbar-additional" style="-moz-image-region: rect(0, 16px, 16px, 0);"/>
+  </toolbarpalette>
 </overlay>
