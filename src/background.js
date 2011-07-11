@@ -142,7 +142,8 @@ LivereloadBackground.prototype = {
         if (this.socket) {
             throw 'WebSocket already opened';
         }
-        var socket = this.socket = new WebSocket(this.uri);
+        var Socket = window.MozWebSocket || window.WebSocket;
+        var socket = this.socket = new Socket(this.uri);
 
         this.disconnectionReason = 'cannot-connect';
         this.versionInfoReceived = false;
