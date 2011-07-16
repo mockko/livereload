@@ -9,8 +9,16 @@ LiveReload is a Safari/Chrome extension + a command-line tool that:
 
 **[Screencast](http://blog.envylabs.com/2010/07/livereload-screencast/)** by Gregg Pollack at envylabs.com.
 
+**Email support:** support@livereload.com
+
 
 ## What's new?
+
+We are working on LiveReload 2.0 that is a native Mac app (Windows some time later too), doesn't require installing any Ruby gems and supports automatic compilation of CoffeeScript, HAML, SASS, LESS, Stylus and Jade. It will be a paid update and will be distributed via the Mac App Store. Alpha version is available at http://livereload.com (beware! it's really just an alpha!)
+
+Version 1.x will remain available and free.
+
+We are also now providing email support for both paid (2.0 alpha) and free (1.x) versions of LiveReload. Say hi by emailing support@livereload.com.
 
 1.6: Configurable host & port, no-extension pure-html/js cross-browser version (see `example/xbrowser.html`, more docs coming soon), many small bug fixes.
 
