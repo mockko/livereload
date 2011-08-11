@@ -1,6 +1,6 @@
 require 'em-websocket'
 require 'em-dir-watcher'
-require 'json/objects'
+require 'json'
 require 'stringio'
 
 # Chrome sometimes sends HTTP/1.0 requests in violation of WebSockets spec
