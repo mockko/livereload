@@ -131,18 +131,19 @@ LivereloadBackground.prototype = {
     },
 
     connect: function() {
-        if (!window.WebSocket) {
+        var Socket = window.MozWebSocket || window.WebSocket;
+        if (!Socket) {
             if (window.opera) {
                 throw 'WebSocket is disabled. To turn it on, open \nopera:config#UserPrefs|EnableWebSockets and check in the checkbox.';
             } else if (navigator.userAgent.indexOf('Firefox/') != -1) {
-                throw 'WebSocket is disabled.\nTo turn it on, open about:config and set network.websocket.override-security-block to true.';
+                throw 'WebSocket is disabled.\nTo turn it on, open about:config and set network.websocket.override-security-block to true.\nhttps://developer.mozilla.org/en/WebSockets';
             }
         }
 
         if (this.socket) {
             throw 'WebSocket already opened';
         }
-        var Socket = window.MozWebSocket || window.WebSocket;
+
         var socket = this.socket = new Socket(this.uri);
 
         this.disconnectionReason = 'cannot-connect';
