@@ -10,3 +10,4 @@ livereload.run = function() {
     livereload.background.enablePage(document);
 };
 
+livereload.run();

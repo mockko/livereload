@@ -45,6 +45,22 @@ task :firefox do
 end
 
 
+file 'livereload-xbrowser.js' => %w(src/background.js src/content.js src/xbrowser/livereload.js) do |t|
+  src = %w(src/background.js src/content.js src/xbrowser/livereload.js).collect { |f| File.read(f).strip }.join("\n") + "\n"
+  src.gsub! "host: (navigator.appVersion.indexOf('Linux') >= 0 ? '0.0.0.0' : 'localhost'),", "host: (location.host || 'localhost').split(':')[0],"
+  File.open(t.name, 'w') { |f| f.write(src) }
+end
+
+file '../LiveReload/livereload.js' => ['livereload-xbrowser.js'] do |t|
+  File.open(t.name, 'w') { |f| f.write(File.read(t.prerequisites.first)) }
+end
+
+task :xbrowser => 'livereload-xbrowser.js'
+
+desc "Update file bundled with LiveReload 2"
+task :lr2 => ['../LiveReload/livereload.js']
+
+
 namespace :gem do
    file GEM_DIST => GEM_SRC do
       cd 'server' do
