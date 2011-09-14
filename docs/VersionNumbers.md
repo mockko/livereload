@@ -21,8 +21,8 @@ Version Numbers
         <string>http://github.com/downloads/mockko/livereload/LiveReload-1.2.safariextz</string>
 
     (3 occurrences — note the last one in URL)
-    
-    
+
+
 **Chrome extension version:**
 
 * `LiveReload.chromeextension/manifest.json`:

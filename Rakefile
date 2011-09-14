@@ -67,7 +67,7 @@ namespace :gem do
          sh 'gem', 'build', 'livereload.gemspec'
       end
    end
-   
+
    desc "Build the livereload gem"
    task :build => GEM_DIST
 

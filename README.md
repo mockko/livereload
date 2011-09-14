@@ -100,7 +100,7 @@ Download [LiveReload 1.6.2 extension](https://github.com/downloads/mockko/livere
 Run the server in the directory you want to watch:
 
     % livereload
-    
+
 You should see something like this:
 
 ![](https://github.com/mockko/livereload/raw/master/docs/images/livereload-server-running.png)

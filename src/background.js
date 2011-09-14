@@ -228,7 +228,7 @@ LivereloadBackground.prototype = {
         }
     },
 
-    constructor: LivereloadBackground 
+    constructor: LivereloadBackground
 
 };
 
