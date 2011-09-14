@@ -1,48 +1,91 @@
+require 'rake/clean'
+
 LIVERELOAD_VERSION = '1.6'
 GEM_SRC = FileList["server/lib/*.rb", "server/*.gemspec", "server/bin/*"]
 GEM_DIST = "server/livereload-#{LIVERELOAD_VERSION}.gem"
 
 
-task :chrome do
-  content_script = 'LiveReload.chromeextension/LiveReload-content.js'
-  File.open content_script, 'w' do |f|
-    f.puts File.read('src/content.js') << File.read('src/chrome/content.js')
-    puts "+ #{content_script}"
+class FileGroup
+
+  attr_reader :sources, :mapping
+
+  def initialize sources, &mapping
+    @sources = sources
+    @mapping = mapping
   end
 
-  background_script = 'LiveReload.chromeextension/LiveReload-background.js'
-  File.open background_script, 'w' do |f|
-    f.puts File.read('src/background.js') << File.read('src/chrome/background.js')
-    puts "+ #{background_script}"
+  def targets
+    @targets ||= @sources.map { |source| @mapping.call(source) }
+  end
+
+  def each
+    @sources.each do |source|
+      yield source, @mapping.call(source)
+    end
+  end
+
+  def rule
+    each do |source, target|
+      file target => [source] do |t|
+        yield source, target
+      end
+    end
+  end
+
+  def self.[] *args
+    self.new(*args)
+  end
+
+end
+
+
+def copy_source dest, *sources
+  File.open(dest, 'w') do |df|
+    df.write sources.map { |fn| File.read(fn) }.join("\n")
   end
 end
 
 
-task :safari do
-  injected_script = 'LiveReload.safariextension/LiveReload-injected.js'
-  File.open injected_script, 'w' do |f|
-    f.puts File.read('src/content.js') << File.read('src/safari/injected.js')
-    puts "+ #{injected_script}"
-  end
+file 'LiveReload.chromeextension/LiveReload-content.js' => ['src/content.js', 'src/chrome/content.js'] do |t|
+  copy_source t.name, *t.prerequisites
+end
 
-  global_script = 'LiveReload.safariextension/LiveReload-global.js'
-  File.open global_script, 'w' do |f|
-    f.puts File.read('src/background.js') << File.read('src/safari/global.js')
-    puts "+ #{global_script}"
+file 'LiveReload.chromeextension/LiveReload-background.js' => ['src/background.js', 'src/chrome/background.js'] do |t|
+  copy_source t.name, *t.prerequisites
+end
+
+desc "Prepare the Chome extension"
+task :chrome => ['LiveReload.chromeextension/LiveReload-content.js', 'LiveReload.chromeextension/LiveReload-background.js']
+
+
+file 'LiveReload.safariextension/LiveReload-injected.js' => ['src/content.js', 'src/safari/injected.js'] do |t|
+  copy_source t.name, *t.prerequisites
+end
+
+file 'LiveReload.safariextension/LiveReload-global.js' => ['src/background.js', 'src/safari/global.js'] do |t|
+  copy_source t.name, *t.prerequisites
+end
+
+desc "Prepare the Safari extension"
+task :safari => ['LiveReload.safariextension/LiveReload-injected.js', 'LiveReload.safariextension/LiveReload-global.js']
+
+FIREFOX_INTERIM = FileGroup.new(%w[src/background.js src/content.js]) { |f| File.join('Firefox/content', File.basename(f)) }
+FIREFOX_BASIC = FileList['Firefox/**/*.{js,xul,manifest,rdf}'] - FIREFOX_INTERIM.targets
+FIREFOX_ALL = FIREFOX_BASIC + FIREFOX_INTERIM.targets
+
+FIREFOX_INTERIM.rule do |source, target|
+  copy_source target, source
+end
+
+file 'LiveReload.xpi' => FIREFOX_ALL do |t|
+  full_dst = File.expand_path(t.name)
+  Dir.chdir 'Firefox' do
+    sh 'zip', full_dst, *t.prerequisites.map { |f| f.sub(%r!^Firefox/!, '') }
   end
 end
 
-
-task :firefox do
-  require 'fileutils'
-  dest_dir = 'Firefox/content'
-  FileUtils.cp %w(src/background.js src/content.js), dest_dir
-  puts "+ #{dest_dir}/background.js"
-  puts "+ #{dest_dir}/content.js"
-  puts 'LiveReload.xpi: '
-  system 'cd Firefox && zip -r ../LiveReload.xpi .'
-  puts '+ LiveReload.xpi (drag it into Firefox window to install)'
-end
+desc "Build the Firefox extension"
+task :firefox => 'LiveReload.xpi'
 
 
 file 'livereload-xbrowser.js' => %w(src/background.js src/content.js src/xbrowser/livereload.js) do |t|
@@ -55,11 +98,18 @@ file '../LiveReload/livereload.js' => ['livereload-xbrowser.js'] do |t|
   File.open(t.name, 'w') { |f| f.write(File.read(t.prerequisites.first)) }
 end
 
+desc "Build the cross-browser version"
 task :xbrowser => 'livereload-xbrowser.js'
 
-desc "Update file bundled with LiveReload 2"
+
+desc "Update the file bundled with LiveReload 2"
 task :lr2 => ['../LiveReload/livereload.js']
 
+
+desc "Process all browser extensions"
+task :all => [:safari, :chrome, :firefox, :xbrowser]
+
+task :default => :all
 
 namespace :gem do
    file GEM_DIST => GEM_SRC do
@@ -127,7 +177,6 @@ task :test do
 end
 
 
-require 'rake/clean'
 CLEAN.include('LiveReload.xpi')
 CLOBBER.include(%w(
   LiveReload.chromeextension/LiveReload-content.js
