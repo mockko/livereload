@@ -1,6 +1,6 @@
 require 'rake/clean'
 
-LIVERELOAD_VERSION = '1.6'
+LIVERELOAD_VERSION = '1.6.1'
 GEM_SRC = FileList["server/lib/*.rb", "server/*.gemspec", "server/bin/*"]
 GEM_DIST = "server/livereload-#{LIVERELOAD_VERSION}.gem"
 
