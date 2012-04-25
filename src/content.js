@@ -516,6 +516,7 @@ LivereloadContent.prototype['.js'] = LivereloadContent.prototype.handleJS;
 LivereloadContent.prototype['.css'] = LivereloadContent.prototype.handleCSS;
 LivereloadContent.prototype['.sass'] = LivereloadContent.prototype.handleCSS;
 LivereloadContent.prototype['.scss'] = LivereloadContent.prototype.handleCSS;
+LivereloadContent.prototype['.less'] = LivereloadContent.prototype.handleCSS;
 LivereloadContent.prototype['.jpg'] =
 LivereloadContent.prototype['.jpeg'] =
 LivereloadContent.prototype['.png'] =
